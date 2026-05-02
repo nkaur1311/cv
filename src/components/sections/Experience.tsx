@@ -1,52 +1,67 @@
 import { motion } from "framer-motion";
 import { config } from "@/portfolio.config";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.75, delay: i * 0.13, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
 export function Experience() {
   return (
-    <section id="experience" className="py-24 px-6">
+    <section id="experience" className="py-32 px-6">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-14"
+        <motion.p
+          variants={fadeUp}
+          custom={0}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4"
         >
-          <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
-            Career
-          </p>
-          <h2 className="section-heading text-4xl md:text-5xl text-foreground">
-            Work Experience
-          </h2>
-        </motion.div>
+          Career
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="section-heading text-4xl md:text-5xl text-foreground mb-14"
+        >
+          Work Experience
+        </motion.h2>
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-0 md:left-8 top-2 bottom-2 w-px bg-border hidden sm:block" />
+          <div className="absolute left-0 md:left-8 top-2 bottom-2 w-px bg-gradient-to-b from-primary/40 via-border to-transparent hidden sm:block" />
 
           <div className="flex flex-col gap-10">
             {config.experience.map((job, i) => (
               <motion.div
                 key={`${job.company}-${i}`}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                variants={fadeUp}
+                custom={i + 2}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
                 className="relative sm:pl-24"
                 data-testid={`experience-${i}`}
               >
                 {/* Timeline dot */}
-                <div className="hidden sm:flex absolute left-4 top-6 w-8 h-8 rounded-full bg-background border-2 border-primary items-center justify-center">
+                <div className="hidden sm:flex absolute left-4 top-6 w-8 h-8 rounded-full bg-background border-2 border-primary/50 items-center justify-center">
                   <div className="w-2 h-2 rounded-full bg-primary" />
                 </div>
 
-                <div className="p-6 rounded-2xl border border-border bg-card card-hover">
+                <div className="p-7 rounded-2xl border border-border bg-card card-hover">
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                     <div>
-                      <h3 className="font-serif font-bold text-xl text-foreground">
+                      <h3 className="font-serif font-light text-2xl text-foreground">
                         {job.role}
                       </h3>
-                      <p className="text-primary font-medium text-sm mt-0.5">
+                      <p className="text-primary text-sm tracking-wide mt-0.5 font-medium">
                         {job.company}
                       </p>
                     </div>
@@ -54,7 +69,7 @@ export function Experience() {
                       {job.period}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 font-light">
                     {job.description}
                   </p>
                   {job.highlights && job.highlights.length > 0 && (

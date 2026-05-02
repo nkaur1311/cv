@@ -2,46 +2,62 @@ import { motion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
 import { config } from "@/portfolio.config";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
 export function Education() {
   if (!config.education || config.education.length === 0) return null;
 
   return (
-    <section id="education" className="py-16 px-6">
+    <section id="education" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-10"
+        <motion.p
+          variants={fadeUp}
+          custom={0}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4"
         >
-          <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
-            Education
-          </p>
-          <h2 className="section-heading text-4xl md:text-5xl text-foreground">
-            Academic Background
-          </h2>
-        </motion.div>
+          Education
+        </motion.p>
+        <motion.h2
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="section-heading text-4xl md:text-5xl text-foreground mb-10"
+        >
+          Academic Background
+        </motion.h2>
 
         <div className="flex flex-col gap-4">
           {config.education.map((edu, i) => (
             <motion.div
               key={`${edu.institution}-${i}`}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              variants={fadeUp}
+              custom={i + 2}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
               className="flex items-center gap-6 p-6 rounded-2xl border border-border bg-card card-hover"
               data-testid={`education-${i}`}
             >
               <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <GraduationCap size={22} />
+                <GraduationCap size={20} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-serif font-bold text-lg text-foreground">
+                <h3 className="font-serif font-light text-xl text-foreground">
                   {edu.degree}
                 </h3>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5 tracking-wide">
                   {edu.institution}
                 </p>
               </div>

@@ -4,6 +4,15 @@ import { Mail, Download, Share2, CheckCircle } from "lucide-react";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { config } from "@/portfolio.config";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.75, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
 export function Contact() {
   const [copied, setCopied] = useState(false);
 
@@ -21,38 +30,52 @@ export function Contact() {
   };
 
   return (
-    <footer id="contact" className="py-24 px-6 border-t border-border bg-card/50">
+    <footer id="contact" className="py-32 px-6 border-t border-border/60 bg-card/30">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center flex flex-col items-center gap-8"
-        >
-          <div>
+        <div className="text-center flex flex-col items-center gap-8">
+          <motion.div
+            variants={fadeUp}
+            custom={0}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+          >
             <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
               Get In Touch
             </p>
-            <h2 className="section-heading text-4xl md:text-5xl text-foreground mb-4">
-              Let&rsquo;s work together.
+            <h2 className="section-heading text-4xl md:text-6xl text-foreground mb-5 leading-tight">
+              Let&rsquo;s work
+              <br />
+              <em className="not-italic font-light italic">together.</em>
             </h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              I&rsquo;m currently open to new opportunities. Whether you have a question or just
-              want to say hi, my inbox is always open.
+            <p className="text-muted-foreground max-w-md mx-auto font-light leading-relaxed">
+              Open to new opportunities. Whether you have a role in mind or just
+              want to connect — my inbox is always open.
             </p>
-          </div>
+          </motion.div>
 
-          <a
+          <motion.a
+            variants={fadeUp}
+            custom={1}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
             href={`mailto:${config.email}`}
-            className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-primary text-primary-foreground font-medium text-sm tracking-wide hover:opacity-90 transition-opacity"
             data-testid="link-contact-email"
           >
-            <Mail size={18} />
+            <Mail size={16} />
             {config.email}
-          </a>
+          </motion.a>
 
-          <div className="flex items-center gap-4">
+          <motion.div
+            variants={fadeUp}
+            custom={2}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="flex items-center gap-3"
+          >
             {config.social.github && (
               <a
                 href={config.social.github}
@@ -62,7 +85,7 @@ export function Contact() {
                 aria-label="GitHub"
                 data-testid="link-footer-github"
               >
-                <FaGithub size={20} />
+                <FaGithub size={18} />
               </a>
             )}
             {config.social.linkedin && (
@@ -74,7 +97,7 @@ export function Contact() {
                 aria-label="LinkedIn"
                 data-testid="link-footer-linkedin"
               >
-                <FaLinkedin size={20} />
+                <FaLinkedin size={18} />
               </a>
             )}
             {config.social.twitter && (
@@ -86,19 +109,26 @@ export function Contact() {
                 aria-label="Twitter"
                 data-testid="link-footer-twitter"
               >
-                <FaXTwitter size={20} />
+                <FaXTwitter size={18} />
               </a>
             )}
-          </div>
+          </motion.div>
 
-          <div className="flex items-center gap-3 flex-wrap justify-center">
+          <motion.div
+            variants={fadeUp}
+            custom={3}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="flex items-center gap-3 flex-wrap justify-center"
+          >
             <a
               href={config.resumeUrl}
               download={config.resumeFileName}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-secondary hover:border-primary/40 transition-all"
               data-testid="button-download-resume-footer"
             >
-              <Download size={15} />
+              <Download size={14} />
               Download Resume
             </a>
             <button
@@ -108,24 +138,31 @@ export function Contact() {
             >
               {copied ? (
                 <>
-                  <CheckCircle size={15} className="text-green-500" />
-                  Link Copied!
+                  <CheckCircle size={14} className="text-green-500" />
+                  Link Copied
                 </>
               ) : (
                 <>
-                  <Share2 size={15} />
+                  <Share2 size={14} />
                   Share Resume
                 </>
               )}
             </button>
-          </div>
+          </motion.div>
 
-          <div className="pt-8 border-t border-border w-full text-center">
-            <p className="text-xs text-muted-foreground font-mono">
+          <motion.div
+            variants={fadeUp}
+            custom={4}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            className="pt-8 border-t border-border/60 w-full text-center"
+          >
+            <p className="text-xs text-muted-foreground font-mono tracking-wide">
               Built with React + Vite &mdash; fork and make it yours.
             </p>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </footer>
   );

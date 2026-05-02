@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { PortfolioPage } from "@/pages/portfolio";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { SmoothScrollProvider } from "@/components/ui/SmoothScroll";
 import { config } from "@/portfolio.config";
 
 function App() {
@@ -26,10 +27,10 @@ function App() {
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
-    <>
+    <SmoothScrollProvider>
       <CustomCursor />
       <PortfolioPage theme={theme} onToggleTheme={toggleTheme} />
-    </>
+    </SmoothScrollProvider>
   );
 }
 

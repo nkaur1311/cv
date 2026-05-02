@@ -198,12 +198,18 @@
 @layer base {
   * {
     @apply border-border;
+    cursor: none !important;
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    /* Lenis handles smooth scroll — native scroll-behavior is off */
   }
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
+  }
+  /* Restore cursor on touch devices */
+  @media (pointer: coarse) {
+    * { cursor: auto !important; }
   }
 }
 

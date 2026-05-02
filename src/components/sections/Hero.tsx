@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Download, Share2, MapPin, ArrowDown, CheckCircle } from "lucide-react";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { config } from "@/portfolio.config";
 
 function Avatar() {
@@ -24,9 +24,7 @@ function Avatar() {
   return (
     <div
       className="w-28 h-28 rounded-2xl flex items-center justify-center text-3xl font-serif font-bold text-primary-foreground ring-2 ring-primary/30"
-      style={{
-        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(250 84% 80%))",
-      }}
+      style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(250 84% 80%))" }}
       data-testid="div-avatar-initials"
     >
       {initials}
@@ -40,8 +38,6 @@ function TypewriterText({ text }: { text: string }) {
 
   useEffect(() => {
     let i = 0;
-    const delay = 600;
-    const speed = 38;
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
         i++;
@@ -50,9 +46,9 @@ function TypewriterText({ text }: { text: string }) {
           clearInterval(interval);
           setDone(true);
         }
-      }, speed);
+      }, 38);
       return () => clearInterval(interval);
-    }, delay);
+    }, 600);
     return () => clearTimeout(timer);
   }, [text]);
 
@@ -68,6 +64,18 @@ function TypewriterText({ text }: { text: string }) {
 
 export function Hero() {
   const [copied, setCopied] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const blobY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const arrowOpacity = useTransform(scrollYProgress, [0, 0.18], [1, 0]);
 
   const handleShare = async () => {
     const url = `${window.location.origin}${config.resumeUrl}`;
@@ -82,35 +90,36 @@ export function Hero() {
     }
   };
 
-  const handleScrollDown = () => {
-    const el = document.querySelector("#about");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section
       id="hero"
+      ref={sectionRef}
       className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-16 overflow-hidden"
     >
-      {/* Background grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15"
+      {/* Parallax dot-grid */}
+      <motion.div
         style={{
-          backgroundImage:
-            "radial-gradient(hsl(var(--primary) / 0.12) 1px, transparent 1px)",
+          y: gridY,
+          backgroundImage: "radial-gradient(hsl(var(--primary) / 0.11) 1px, transparent 1px)",
           backgroundSize: "44px 44px",
         }}
-      />
-      {/* Glow blob */}
-      <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none opacity-15 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(ellipse, hsl(var(--primary)), transparent 70%)",
-        }}
+        className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20"
       />
 
-      <div className="relative z-10 max-w-3xl w-full text-center flex flex-col items-center gap-6">
+      {/* Parallax glow blob */}
+      <motion.div
+        style={{
+          y: blobY,
+          background: "radial-gradient(ellipse, hsl(var(--primary)), transparent 70%)",
+        }}
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none opacity-15 blur-3xl"
+      />
+
+      {/* Main content — drifts up & fades as you scroll */}
+      <motion.div
+        style={{ y, opacity }}
+        className="relative z-10 max-w-3xl w-full text-center flex flex-col items-center gap-6"
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -132,7 +141,6 @@ export function Hero() {
             </span>
           )}
 
-          {/* Name — editorial serif */}
           <h1 className="text-6xl md:text-8xl font-serif font-light tracking-tight text-foreground leading-none">
             {config.name.split(" ").map((word, i) => (
               <span key={i} className={i === 1 ? "italic" : ""}>
@@ -141,7 +149,6 @@ export function Hero() {
             ))}
           </h1>
 
-          {/* Title — small caps / spaced sans */}
           <p className="text-sm font-medium tracking-[0.22em] text-primary uppercase mt-1">
             {config.title}
           </p>
@@ -208,10 +215,6 @@ export function Hero() {
         >
           <a
             href="#projects"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
-            }}
             className="px-7 py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm tracking-wide hover:opacity-90 transition-opacity"
             data-testid="button-view-work"
           >
@@ -244,13 +247,15 @@ export function Hero() {
             )}
           </button>
         </motion.div>
-      </div>
+      </motion.div>
 
+      {/* Arrow fades out as soon as you start scrolling */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        style={{ opacity: arrowOpacity }}
         transition={{ duration: 0.5, delay: 1.2 }}
-        onClick={handleScrollDown}
+        onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors animate-bounce"
         aria-label="Scroll down"
         data-testid="button-scroll-down"
