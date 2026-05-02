@@ -8,22 +8,23 @@ interface NavbarProps {
   onToggleTheme: () => void;
 }
 
-// All possible nav links in display order — only shown if their section is enabled
-const ALL_NAV_LINKS = [
-  { label: "About",          href: "#about",          section: "about"          },
-  { label: "Skills",         href: "#skills",         section: "skills"         },
-  { label: "Experience",     href: "#experience",     section: "experience"     },
-  { label: "Projects",       href: "#projects",       section: "projects"       },
-  { label: "Education",      href: "#education",      section: "education"      },
-  { label: "Certifications", href: "#certifications", section: "certifications" },
-  { label: "Contact",        href: "#contact",        section: "contact"        },
-] as const;
+const SECTION_LABELS: Record<string, string> = {
+  about:          "About",
+  skills:         "Skills",
+  experience:     "Experience",
+  projects:       "Projects",
+  education:      "Education",
+  certifications: "Certifications",
+  contact:        "Contact",
+};
 
-// Derive visible nav links from section toggles at module level (static, no re-renders needed)
-const s = config.sections;
-const navLinks = ALL_NAV_LINKS.filter(
-  (l) => s[l.section as keyof typeof s] !== false,
-);
+// Mirror the user's section order; only include visible sections
+const navLinks = config.sections
+  .filter((s) => s.show)
+  .map((s) => ({
+    label: SECTION_LABELS[s.id] ?? s.id,
+    href:  `#${s.id}`,
+  }));
 
 const sectionIds = navLinks.map((l) => l.href.slice(1));
 

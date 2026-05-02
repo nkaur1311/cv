@@ -25,15 +25,15 @@
     "website": ""
   },
 
-  "sections": {
-    "about":          true,
-    "skills":         true,
-    "experience":     true,
-    "projects":       true,
-    "education":      true,
-    "certifications": true,
-    "contact":        true
-  },
+  "sections": [
+    { "id": "about",          "show": true },
+    { "id": "skills",         "show": true },
+    { "id": "experience",     "show": true },
+    { "id": "projects",       "show": true },
+    { "id": "education",      "show": true },
+    { "id": "certifications", "show": true },
+    { "id": "contact",        "show": true }
+  ],
 
   "about": "I'm a full-stack engineer with 5+ years of experience building products that people love. I specialize in React, Node.js, and distributed systems. When I'm not coding, I'm hiking trails or experimenting with new coffee brewing methods.",
 

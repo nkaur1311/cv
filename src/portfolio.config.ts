@@ -10,14 +10,18 @@
 import type { ColorPreset, PresetPalette } from "@/lib/themes";
 import rawConfig from "../portfolio.config.json";
 
-export interface SectionVisibility {
-  about:          boolean;
-  skills:         boolean;
-  experience:     boolean;
-  projects:       boolean;
-  education:      boolean;
-  certifications: boolean;
-  contact:        boolean;
+export type SectionId =
+  | "about"
+  | "skills"
+  | "experience"
+  | "projects"
+  | "education"
+  | "certifications"
+  | "contact";
+
+export interface SectionEntry {
+  id:   SectionId;
+  show: boolean;
 }
 
 export interface Certification {
@@ -29,15 +33,11 @@ export interface Certification {
   tags:          string[];
 }
 
-// Re-export with proper types applied
 export const config = {
   ...rawConfig,
-  colorPreset:  rawConfig.colorPreset  as ColorPreset,
-  defaultTheme: rawConfig.defaultTheme as "system" | "light" | "dark",
-  sections:     rawConfig.sections     as SectionVisibility,
+  colorPreset:    rawConfig.colorPreset  as ColorPreset,
+  defaultTheme:   rawConfig.defaultTheme as "system" | "light" | "dark",
+  sections:       rawConfig.sections     as SectionEntry[],
   certifications: (rawConfig.certifications ?? []) as Certification[],
-
-  // Only used when colorPreset is "custom".
-  customColors: (rawConfig as unknown as { customColors?: PresetPalette })
-    .customColors,
+  customColors:   (rawConfig as unknown as { customColors?: PresetPalette }).customColors,
 };

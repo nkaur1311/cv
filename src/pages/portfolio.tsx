@@ -8,26 +8,34 @@ import { Education } from "@/components/sections/Education";
 import { Certifications } from "@/components/sections/Certifications";
 import { Contact } from "@/components/sections/Contact";
 import { config } from "@/portfolio.config";
+import type { SectionId } from "@/portfolio.config";
 
 interface PortfolioPageProps {
   theme: string;
   onToggleTheme: () => void;
 }
 
-const s = config.sections;
+const SECTION_COMPONENTS: Record<SectionId, React.ComponentType> = {
+  about:          About,
+  skills:         Skills,
+  experience:     Experience,
+  projects:       Projects,
+  education:      Education,
+  certifications: Certifications,
+  contact:        Contact,
+};
 
 export function PortfolioPage({ theme, onToggleTheme }: PortfolioPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <Hero />
-      {s.about          && <About />}
-      {s.skills         && <Skills />}
-      {s.experience     && <Experience />}
-      {s.projects       && <Projects />}
-      {s.education      && <Education />}
-      {s.certifications && <Certifications />}
-      {s.contact        && <Contact />}
+      {config.sections
+        .filter((s) => s.show)
+        .map(({ id }) => {
+          const Section = SECTION_COMPONENTS[id];
+          return Section ? <Section key={id} /> : null;
+        })}
     </div>
   );
 }
