@@ -360,7 +360,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.07 }}
-            className="text-[11px] text-muted-foreground/40 tracking-[0.2em] font-mono -mt-4 mb-6 uppercase"
+            className="text-[11px] text-muted-foreground tracking-[0.2em] font-mono -mt-4 mb-6 uppercase opacity-55"
           >
             git + curriculum vitae
           </motion.p>

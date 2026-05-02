@@ -370,6 +370,8 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
         <div className="flex items-center gap-1 p-1 rounded-lg bg-secondary border border-border">
           <button
             onClick={() => setAndStore("two-column")}
+            aria-label="Two-column layout"
+            aria-pressed={layout === "two-column"}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               layout === "two-column"
                 ? "bg-background text-foreground shadow-sm"
@@ -381,6 +383,8 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
           </button>
           <button
             onClick={() => setAndStore("classic")}
+            aria-label="Classic layout"
+            aria-pressed={layout === "classic"}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               layout === "classic"
                 ? "bg-background text-foreground shadow-sm"
@@ -396,6 +400,7 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShareOpen(true)}
+            aria-label="Share resume"
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
           >
             <Share2 size={13} />

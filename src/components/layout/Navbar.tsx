@@ -176,6 +176,8 @@ export function Navbar({ theme, onToggleTheme, topOffset }: NavbarProps) {
             <div ref={moreRef} className="relative">
               <button
                 onClick={() => setMoreOpen((o) => !o)}
+                aria-expanded={moreOpen}
+                aria-haspopup="true"
                 className={`flex items-center gap-1 px-3 py-2 text-xs font-medium tracking-widest uppercase rounded-md transition-colors ${
                   moreOpen || moreLinks.some((l) => activeSection === l.id)
                     ? "text-foreground bg-secondary"

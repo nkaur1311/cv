@@ -133,10 +133,14 @@ export function ChangelogModal({ open, onClose }: Props) {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
+            aria-hidden="true"
             className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm no-print"
           />
           <motion.div
             key="panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="changelog-title"
             initial={{ opacity: 0, y: 32, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
@@ -147,7 +151,7 @@ export function ChangelogModal({ open, onClose }: Props) {
             <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
               <div className="flex items-center gap-2.5">
                 <Sparkles size={16} className="text-primary" />
-                <span className="text-sm font-semibold text-foreground">What's new in GitVitae</span>
+                <span id="changelog-title" className="text-sm font-semibold text-foreground">What's new in GitVitae</span>
                 {refreshing && <RefreshCw size={11} className="text-muted-foreground animate-spin" />}
               </div>
               <div className="flex items-center gap-3">
