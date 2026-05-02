@@ -205,15 +205,26 @@ export function Navbar({ theme, onToggleTheme, topOffset }: NavbarProps) {
             </AnimatePresence>
           </button>
 
-          <a
-            href={config.resumeUrl}
-            download={config.resumeFileName}
-            className="hidden md:flex items-center gap-2 px-4 py-2 text-xs font-medium tracking-widest uppercase bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
-            data-testid="button-download-resume-nav"
-          >
-            <Download size={13} />
-            Resume
-          </a>
+          {config.resumeUrl ? (
+            <a
+              href={config.resumeUrl}
+              download={config.resumeFileName || "resume.pdf"}
+              className="hidden md:flex items-center gap-2 px-4 py-2 text-xs font-medium tracking-widest uppercase bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+              data-testid="button-download-resume-nav"
+            >
+              <Download size={13} />
+              Resume
+            </a>
+          ) : (
+            <a
+              href="#/resume"
+              className="hidden md:flex items-center gap-2 px-4 py-2 text-xs font-medium tracking-widest uppercase bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+              data-testid="button-download-resume-nav"
+            >
+              <Download size={13} />
+              Resume
+            </a>
+          )}
 
           <button
             className="md:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
@@ -283,14 +294,25 @@ export function Navbar({ theme, onToggleTheme, topOffset }: NavbarProps) {
                   </a>
                 );
               })}
-              <a
-                href={config.resumeUrl}
-                download={config.resumeFileName}
-                className="flex items-center gap-2 px-3 py-3 text-xs font-medium tracking-widest uppercase text-primary hover:bg-accent rounded-md transition-colors"
-              >
-                <Download size={13} />
-                Download Resume
-              </a>
+              {config.resumeUrl ? (
+                <a
+                  href={config.resumeUrl}
+                  download={config.resumeFileName || "resume.pdf"}
+                  className="flex items-center gap-2 px-3 py-3 text-xs font-medium tracking-widest uppercase text-primary hover:bg-accent rounded-md transition-colors"
+                >
+                  <Download size={13} />
+                  Download Resume
+                </a>
+              ) : (
+                <a
+                  href="#/resume"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 px-3 py-3 text-xs font-medium tracking-widest uppercase text-primary hover:bg-accent rounded-md transition-colors"
+                >
+                  <Download size={13} />
+                  View Resume
+                </a>
+              )}
             </div>
           </motion.div>
         )}

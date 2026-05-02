@@ -21,8 +21,17 @@ avatarUrl: ""
 # Leave empty to show your initials as a styled placeholder.
 
 # ── Resume download ────────────────────────────────────────────────────
-resumeUrl: "/resume.pdf"
-resumeFileName: "Alex_Rivera_Resume.pdf"
+# Optional: link directly to a hosted PDF (Google Drive, Dropbox, etc.)
+# If left blank the navbar "Resume" button opens the built-in resume page
+# where visitors can use "Save PDF" to print their own copy.
+#
+# How to get a direct download link:
+#   1. Visit /resume in your portfolio, click "Save PDF" -> save the file
+#   2. Upload that PDF to Google Drive / Dropbox and copy the direct link
+#   3. Paste the link below and update resumeFileName accordingly
+#
+# resumeUrl: "https://drive.google.com/uc?export=download&id=YOUR_FILE_ID"
+# resumeFileName: "Alex_Rivera_Resume.pdf"
 
 # ── Status ─────────────────────────────────────────────────────────────
 openToWork: true         # Shows "Open to Opportunities" banner when true

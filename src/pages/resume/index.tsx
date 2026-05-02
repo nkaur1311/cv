@@ -312,7 +312,7 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
   }, [layout, theme]);
 
   return (
-    <div className="min-h-screen bg-muted/40 print:bg-white">
+    <div className="min-h-screen print:min-h-0 bg-muted/40 print:bg-white">
 
       {/* ── Toolbar (hidden on print) ───────────────────────────────── */}
       <div className="print:hidden sticky top-0 z-50 flex items-center justify-between gap-4 px-6 py-3 bg-background/90 backdrop-blur border-b border-border">
@@ -372,8 +372,7 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-[794px] bg-background print:bg-white shadow-xl print:shadow-none rounded-xl print:rounded-none p-10 print:p-8"
-            style={{ minHeight: "1123px" }}
+            className="w-full max-w-[794px] bg-background print:bg-white shadow-xl print:shadow-none rounded-xl print:rounded-none p-10 print:p-8 min-h-[1123px] print:min-h-0"
           >
             {layout === "two-column" ? <TwoColumnLayout /> : <ClassicLayout />}
           </motion.div>
@@ -385,6 +384,15 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
         @media print {
           @page { margin: 1.4cm 1.6cm; size: A4 portrait; }
           body { background: white !important; }
+          /* Neutralise framer-motion transforms and min-height overflows */
+          [data-framer-component-type],
+          [style*="transform"],
+          [style*="opacity"] {
+            transform: none !important;
+            opacity: 1 !important;
+          }
+          /* Belt-and-suspenders: remove any leftover min-height on the paper */
+          .resume-paper { min-height: 0 !important; }
         }
       `}</style>
     </div>
