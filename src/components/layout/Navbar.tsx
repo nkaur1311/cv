@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Download, Menu, X, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { config } from "@/portfolio.config";
-import { ShareModal } from "@/components/ui/ShareModal";
+import { ShareModal } from "@/components/ShareModal";
 
 interface NavbarProps {
   theme: string;

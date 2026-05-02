@@ -1,14 +1,8 @@
 import { motion } from "framer-motion";
 import { config } from "@/portfolio.config";
+import { fadeUpVariants } from "@/lib/animation";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+const fadeUp = fadeUpVariants(40, 0.7, 0.1);
 
 export function Skills() {
   return (

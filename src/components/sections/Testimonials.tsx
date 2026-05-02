@@ -2,15 +2,9 @@ import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import { config } from "@/portfolio.config";
 import type { Testimonial } from "@/portfolio.config";
+import { fadeUpVariants } from "@/lib/animation";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 36 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+const fadeUp = fadeUpVariants(36, 0.7, 0.1);
 
 function TestimonialCard({ t, index }: { t: Testimonial; index: number }) {
   return (

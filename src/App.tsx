@@ -3,9 +3,9 @@ import { Router, Route, Switch } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { PortfolioPage } from "@/pages/portfolio";
 import { ResumePage } from "@/pages/resume";
-import { CustomCursor } from "@/components/ui/CustomCursor";
-import { SmoothScrollProvider } from "@/components/ui/SmoothScroll";
-import { OpenToWorkBanner } from "@/components/ui/OpenToWorkBanner";
+import { CustomCursor } from "@/components/CustomCursor";
+import { SmoothScrollProvider } from "@/components/SmoothScroll";
+import { OpenToWorkBanner } from "@/components/OpenToWorkBanner";
 import { applyThemePalette } from "@/lib/themes";
 import { config } from "@/portfolio.config";
 

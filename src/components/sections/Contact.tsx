@@ -3,16 +3,10 @@ import { motion } from "framer-motion";
 import { Mail, Download, Share2 } from "lucide-react";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { config } from "@/portfolio.config";
-import { ShareModal } from "@/components/ui/ShareModal";
+import { ShareModal } from "@/components/ShareModal";
+import { fadeUpVariants } from "@/lib/animation";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.75, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+const fadeUp = fadeUpVariants(40, 0.75, 0.12);
 
 export function Contact() {
   const [shareOpen, setShareOpen] = useState(false);

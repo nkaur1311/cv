@@ -23,7 +23,6 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     }
     rafId = requestAnimationFrame(raf);
 
-    // Make anchor smooth-scroll links work with Lenis
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a[href^='#']") as HTMLAnchorElement | null;

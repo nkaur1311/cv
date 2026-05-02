@@ -2,15 +2,9 @@ import { useRef } from "react";
 import { motion, useScroll } from "framer-motion";
 import { Mail, Globe } from "lucide-react";
 import { config } from "@/portfolio.config";
+import { fadeUpVariants } from "@/lib/animation";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 48 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+const fadeUp = fadeUpVariants(48, 0.8, 0.12);
 
 // Map a proficiency level to a visual weight
 const LEVEL_STYLE: Record<string, string> = {

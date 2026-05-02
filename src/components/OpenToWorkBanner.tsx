@@ -27,7 +27,6 @@ export function OpenToWorkBanner({ onDismiss }: OpenToWorkBannerProps) {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="fixed top-0 left-0 right-0 z-[60] h-10 flex items-center justify-center gap-3 px-4 bg-primary text-primary-foreground text-xs font-medium tracking-wide select-none print:hidden"
         >
-          {/* Pulsing availability dot */}
           <span className="relative flex items-center shrink-0">
             <span className="absolute inline-flex h-2 w-2 rounded-full bg-primary-foreground opacity-70 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-foreground" />
@@ -43,7 +42,6 @@ export function OpenToWorkBanner({ onDismiss }: OpenToWorkBannerProps) {
             Available for full-time roles &amp; freelance projects
           </span>
 
-          {/* CTA */}
           <a
             href={`mailto:${config.email}?subject=Opportunity for ${config.name}`}
             className="ml-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-foreground/15 hover:bg-primary-foreground/25 border border-primary-foreground/20 transition-colors font-semibold text-[11px] uppercase tracking-widest whitespace-nowrap"
@@ -52,7 +50,6 @@ export function OpenToWorkBanner({ onDismiss }: OpenToWorkBannerProps) {
             Get in touch
           </a>
 
-          {/* Dismiss */}
           <button
             onClick={handleDismiss}
             aria-label="Dismiss banner"

@@ -1,15 +1,9 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import { config } from "@/portfolio.config";
+import { fadeUpVariants } from "@/lib/animation";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 44 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.75, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+const fadeUp = fadeUpVariants(44, 0.75, 0.12);
 
 export function Projects() {
   const featured = config.projects.filter((p) => p.featured);
