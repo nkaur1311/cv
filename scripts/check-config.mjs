@@ -119,8 +119,32 @@ function checkBoolean(field, value) {
 gha.group("GitVita config validation");
 console.log(`\n${B("GitVita Config Checker")}  ${D("portfolio.config.yaml")}\n`);
 
+// Site mode
+console.log(D("── Site mode ────────────────────────────────────────────────────────"));
+if (!cfg.siteMode) {
+  fail("siteMode", 'Not set — add  siteMode: "portfolio"  to show your portfolio');
+} else if (!["landing", "portfolio"].includes(cfg.siteMode)) {
+  fail("siteMode", `"${cfg.siteMode}" is not valid — use "landing" or "portfolio"`);
+} else if (cfg.siteMode === "landing") {
+  warn("siteMode", '"landing" — your portfolio is hidden. Change to "portfolio" when ready to go live.');
+} else {
+  pass("siteMode", cfg.siteMode);
+}
+
+// siteUrl placeholder
+const PLACEHOLDER_URL = "yourusername.github.io";
+if (!cfg.siteUrl) {
+  warn("siteUrl", 'Not set — RSS feed and section share links will use a fallback URL. Add your GitHub Pages URL.');
+} else if (cfg.siteUrl.includes(PLACEHOLDER_URL)) {
+  warn("siteUrl", `Still set to the placeholder "${cfg.siteUrl}" — replace "yourusername" with your GitHub username.`);
+} else if (!/^https?:\/\/.+/.test(cfg.siteUrl)) {
+  fail("siteUrl", `"${cfg.siteUrl}" must start with https://`);
+} else {
+  pass("siteUrl", cfg.siteUrl);
+}
+
 // Identity
-console.log(D("── Identity ─────────────────────────────────────────────────────────"));
+console.log(D("\n── Identity ─────────────────────────────────────────────────────────"));
 checkRequired("name",      cfg.name,    "Your full name shown at the top of the portfolio");
 checkRequired("title",     cfg.title,   'Your job title / headline e.g. "Full-Stack Engineer"');
 checkRequired("tagline",   cfg.tagline, "One-line pitch shown below your name in the hero");
@@ -136,6 +160,16 @@ if (cfg.location) pass("location", cfg.location);
 else warn("location", "Not set — location won't be displayed");
 checkBoolean("openToWork", cfg.openToWork);
 
+// Avatar placeholder check
+const DEMO_AVATAR = "api.dicebear.com";
+if (!cfg.avatarUrl) {
+  warn("avatarUrl", "Not set — your initials will be shown instead of a photo");
+} else if (cfg.avatarUrl.includes(DEMO_AVATAR)) {
+  warn("avatarUrl", "Still using the demo avatar — upload your own photo and paste the URL here");
+} else {
+  pass("avatarUrl", cfg.avatarUrl);
+}
+
 // Theme
 console.log(D("\n── Theme ────────────────────────────────────────────────────────────"));
 checkEnum("defaultTheme", cfg.defaultTheme, ["light", "dark", "system"]);
@@ -144,10 +178,21 @@ checkEnum("colorPreset",  cfg.colorPreset,  ["indigo", "emerald", "rose", "amber
 // Social
 console.log(D("\n── Social links ─────────────────────────────────────────────────────"));
 const s = cfg.social || {};
-if (s.github)   checkUrl("social.github",   s.github);
-else            warn("social.github",   "Not set — GitHub link will be hidden");
-if (s.linkedin) checkUrl("social.linkedin", s.linkedin);
-else            warn("social.linkedin", "Not set — LinkedIn link will be hidden");
+const PLACEHOLDER_USERNAME = "yourusername";
+if (!s.github) {
+  warn("social.github",   "Not set — GitHub link will be hidden");
+} else if (s.github.includes(PLACEHOLDER_USERNAME)) {
+  warn("social.github",   `Still contains "${PLACEHOLDER_USERNAME}" — replace with your actual GitHub username`);
+} else {
+  checkUrl("social.github", s.github);
+}
+if (!s.linkedin) {
+  warn("social.linkedin", "Not set — LinkedIn link will be hidden");
+} else if (s.linkedin.includes(PLACEHOLDER_USERNAME)) {
+  warn("social.linkedin", `Still contains "${PLACEHOLDER_USERNAME}" — replace with your actual LinkedIn handle`);
+} else {
+  checkUrl("social.linkedin", s.linkedin);
+}
 if (s.twitter)  checkUrl("social.twitter",  s.twitter);
 if (s.website)  checkUrl("social.website",  s.website);
 
@@ -192,6 +237,30 @@ pass("publications", `${pubs.length} entr${pubs.length !== 1 ? "ies" : "y"}`);
 
 const testimonials = cfg.testimonials || [];
 pass("testimonials", `${testimonials.length} entr${testimonials.length !== 1 ? "ies" : "y"}`);
+
+// Blog
+console.log(D("\n── Blog ─────────────────────────────────────────────────────────────"));
+const blog = cfg.blog || {};
+if (blog.enabled) {
+  pass("blog.enabled", "true");
+  if (!blog.title) warn("blog.title", 'Enabled but no title set — defaults to "Blog"');
+  else pass("blog.title", blog.title);
+} else {
+  pass("blog.enabled", "false", "(blog is hidden)");
+}
+
+// Analytics
+console.log(D("\n── Analytics ────────────────────────────────────────────────────────"));
+const analytics = cfg.analytics || {};
+if (analytics.goatcounterCode) {
+  if (!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(analytics.goatcounterCode)) {
+    fail("analytics.goat…", `"${analytics.goatcounterCode}" is not a valid GoatCounter code — use lowercase letters, numbers, and hyphens only`);
+  } else {
+    pass("analytics.goat…", analytics.goatcounterCode, `→ https://${analytics.goatcounterCode}.goatcounter.com`);
+  }
+} else {
+  pass("analytics", "not configured", "(GitHub Insights still works — repo → Insights → Traffic)");
+}
 
 // ── Summary ───────────────────────────────────────────────────────────────────
 console.log();
