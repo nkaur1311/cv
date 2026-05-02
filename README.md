@@ -2,14 +2,14 @@
 
 A free, open-source portfolio template for developers and job seekers. Edit one YAML file, push to GitHub, get a live portfolio — no account needed, no hosting fees, no framework knowledge required.
 
-**Live demo:** [gitvitae.github.io](https://gitvitae.github.io)
+**Live demo:** [git-vitae.github.io](https://git-vitae.github.io)
 
 ---
 
 ## How it works
 
 ```
-github.com/gitvitae/gitvitae.github.io
+github.com/git-vitae/git-vitae.github.io
          ↓  Use this template
 github.com/YOU/my-portfolio
          ↓  Edit portfolio.config.yaml
@@ -131,7 +131,7 @@ pnpm dev            # preview at http://localhost:3000
 
 ## Getting updates
 
-**Stay notified:** click **Watch → Custom → Releases only** on the [GitVitae repo](https://github.com/gitvitae/gitvitae.github.io) and GitHub will email you whenever a new version ships.
+**Stay notified:** click **Watch → Custom → Releases only** on the [GitVitae repo](https://github.com/git-vitae/git-vitae.github.io) and GitHub will email you whenever a new version ships.
 
 When you're ready to pull an update into your portfolio, run:
 
@@ -161,4 +161,4 @@ React · Vite · TypeScript · Tailwind CSS · Framer Motion
 
 ---
 
-*Built with [GitVitae](https://github.com/gitvitae/gitvitae.github.io) — MIT License*
+*Built with [GitVitae](https://github.com/git-vitae/git-vitae.github.io) — MIT License*

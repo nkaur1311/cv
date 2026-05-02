@@ -11,8 +11,8 @@
 
 import { execSync, spawnSync } from "child_process";
 
-const UPSTREAM_REMOTE = "gitvitae";
-const UPSTREAM_URL    = "https://github.com/gitvitae/gitvitae.github.io";
+const UPSTREAM_REMOTE = "git-vitae";
+const UPSTREAM_URL    = "https://github.com/git-vitae/git-vitae.github.io";
 const UPSTREAM_BRANCH = "main";
 
 function run(cmd, opts = {}) {

@@ -21,8 +21,8 @@ especially welcome.
 ## Running locally
 
 ```bash
-git clone https://github.com/gitvitae/gitvitae.github.io
-cd gitvitae.github.io
+git clone https://github.com/git-vitae/git-vitae.github.io
+cd git-vitae.github.io
 pnpm install
 pnpm dev          # http://localhost:3000
 ```
@@ -93,9 +93,9 @@ docs: clarify avatarUrl in README
 If you've forked or templated this repo and want to pull in new features:
 
 ```bash
-git remote add gitvitae https://github.com/gitvitae/gitvitae.github.io
-git fetch gitvitae
-git merge gitvitae/main --allow-unrelated-histories
+git remote add git-vitae https://github.com/git-vitae/git-vitae.github.io
+git fetch git-vitae
+git merge git-vitae/main --allow-unrelated-histories
 # resolve any conflicts — they'll only be in files you've changed
 ```
 

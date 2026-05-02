@@ -34,14 +34,14 @@ jobs:
         run: cp portfolio.config.yaml /tmp/my-portfolio-config.yaml
 
       - name: Add GitVitae upstream remote
-        run: git remote add gitvitae https://github.com/gitvitae/gitvitae.github.io || true
+        run: git remote add git-vitae https://github.com/git-vitae/git-vitae.github.io || true
 
       - name: Fetch latest template
-        run: git fetch gitvitae main
+        run: git fetch git-vitae main
 
       - name: Merge template updates
         run: |
-          git merge gitvitae/main \
+          git merge git-vitae/main \
             --allow-unrelated-histories \
             --no-edit \
             -m "chore: sync GitVitae template updates" \

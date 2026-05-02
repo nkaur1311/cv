@@ -7,8 +7,8 @@ import {
   Link2, LayoutTemplate,
 } from "lucide-react";
 
-const GITHUB_TEMPLATE_URL = "https://github.com/gitvitae/gitvitae.github.io/generate";
-const GITHUB_REPO_URL = "https://github.com/gitvitae/gitvitae.github.io";
+const GITHUB_TEMPLATE_URL = "https://github.com/git-vitae/git-vitae.github.io/generate";
+const GITHUB_REPO_URL = "https://github.com/git-vitae/git-vitae.github.io";
 const SETUP_URL = "#/setup";
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
