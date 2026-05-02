@@ -4,16 +4,19 @@
  * Validates portfolio.config.yaml before you deploy.
  * Gives friendly, plain-English error messages for every problem found.
  *
- * Run:  pnpm check-config
+ * Run:  pnpm check-config          — validate only
+ *       pnpm check-config --fix    — validate + auto-apply safe structural defaults
  */
 
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import yaml from "js-yaml";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..");
+const __dirname   = dirname(fileURLToPath(import.meta.url));
+const ROOT        = join(__dirname, "..");
+const CONFIG_PATH = join(ROOT, "portfolio.config.yaml");
+const FIX_MODE    = process.argv.includes("--fix");
 
 // ── Colours ───────────────────────────────────────────────────────────────────
 const G = (s) => `\x1b[32m${s}\x1b[0m`;   // green
@@ -36,7 +39,7 @@ const gha = {
 // ── Load config ───────────────────────────────────────────────────────────────
 let cfg;
 try {
-  cfg = yaml.load(readFileSync(join(ROOT, "portfolio.config.yaml"), "utf8"));
+  cfg = yaml.load(readFileSync(CONFIG_PATH, "utf8"));
 } catch (e) {
   gha.error(`Could not parse portfolio.config.yaml — ${e.message}`, "YAML Parse Error");
   console.error(R("\n✗ Could not read portfolio.config.yaml\n"));
@@ -194,8 +197,22 @@ const parts = [
 ].filter(Boolean);
 console.log(`  ${parts.join("  ")}\n`);
 
-if (errors > 0) {
+if (errors === 0) {
+  if (warnings > 0) {
+    console.log(Y(`  Looks good! Address the warnings above to get the most from your portfolio.\n`));
+    gha.endgroup();
+    gha.notice(`Config valid with ${warnings} warning${warnings !== 1 ? "s" : ""}. See details above.`);
+  } else {
+    console.log(G(`  ✓ Everything looks great — your config is fully set up!\n`));
+    gha.endgroup();
+  }
+  process.exit(0);
+}
+
+// ── errors > 0 ────────────────────────────────────────────────────────────────
+if (!FIX_MODE) {
   console.log(R(`  Fix the ${errors} error${errors !== 1 ? "s" : ""} above before deploying.\n`));
+  console.log(D(`  Tip: run  pnpm check-config --fix  to auto-apply safe structural defaults.\n`));
   gha.endgroup();
   gha.error(
     `${errors} config error${errors !== 1 ? "s" : ""} found in portfolio.config.yaml — ` +
@@ -203,11 +220,110 @@ if (errors > 0) {
     "Config validation failed"
   );
   process.exit(1);
-} else if (warnings > 0) {
-  console.log(Y(`  Looks good! Address the warnings above to get the most from your portfolio.\n`));
+}
+
+// ── --fix mode ────────────────────────────────────────────────────────────────
+console.log(B("── Auto-fix ─────────────────────────────────────────────────────────"));
+
+let rawYaml = readFileSync(CONFIG_PATH, "utf8");
+const applied   = [];
+const needsYou  = [];
+
+// Structural fields: safe to set a default without user input
+const STRUCTURAL = [
+  {
+    key: "defaultTheme",
+    default: "system",
+    valid: ["light", "dark", "system"],
+    yamlVal: "system",
+  },
+  {
+    key: "colorPreset",
+    default: "indigo",
+    valid: ["indigo", "emerald", "rose", "amber", "ocean", "slate", "custom"],
+    yamlVal: "indigo",
+  },
+  {
+    key: "openToWork",
+    default: false,
+    valid: null, // boolean check
+    yamlVal: "false",
+  },
+];
+
+for (const { key, default: def, valid, yamlVal } of STRUCTURAL) {
+  const val = cfg[key];
+  const keyLineRe = new RegExp(`^(${key}\\s*:).*$`, "m");
+  const keyPresent = keyLineRe.test(rawYaml);
+
+  const isInvalid = val === undefined || val === null ||
+    (valid ? !valid.includes(val) : typeof val !== "boolean");
+
+  if (!isInvalid) continue;
+
+  if (keyPresent) {
+    // Replace the existing (invalid) line, preserving any inline comment
+    rawYaml = rawYaml.replace(keyLineRe, `$1 ${yamlVal}  # auto-fixed from: ${JSON.stringify(val)}`);
+    applied.push({ key, to: def, from: val, action: "fixed" });
+  } else {
+    // Key is missing entirely — append
+    rawYaml += `\n${key}: ${yamlVal}  # added by check-config --fix\n`;
+    applied.push({ key, to: def, from: undefined, action: "added" });
+  }
+}
+
+// Required user-data fields: can't guess these, but add TODO stubs if absent
+const USER_REQUIRED = [
+  { key: "name",    stub: "Your Name",                       hint: "your full name" },
+  { key: "title",   stub: "Your Professional Title",         hint: 'your job title, e.g. "Full-Stack Engineer"' },
+  { key: "tagline", stub: "One-line pitch for your hero section.", hint: "a short, punchy description" },
+  { key: "email",   stub: "you@example.com",                 hint: "your contact email" },
+];
+
+let stubBlock = "";
+for (const { key, stub, hint } of USER_REQUIRED) {
+  const val = cfg[key];
+  if (!val || (typeof val === "string" && !val.trim())) {
+    stubBlock += `# ${key}: ${stub}  # TODO: replace with ${hint}\n`;
+    needsYou.push(key);
+  }
+}
+
+if (stubBlock) {
+  rawYaml += `\n# ── TODO: fill in these required fields (pnpm check-config --fix) ──────────\n${stubBlock}`;
+}
+
+// Write changes if anything was touched
+if (applied.length > 0 || needsYou.length > 0) {
+  writeFileSync(CONFIG_PATH, rawYaml);
+}
+
+// Report
+if (applied.length > 0) {
+  console.log();
+  console.log(G(`  Auto-applied ${applied.length} safe default${applied.length !== 1 ? "s" : ""}:`));
+  for (const { key, to, from, action } of applied) {
+    const fromStr = from !== undefined ? D(`  (was: ${JSON.stringify(from)})`) : "";
+    console.log(`  ${G("✓")} ${B(key.padEnd(18))} ${action === "added" ? D("added") : D("fixed")} → ${String(to)}${fromStr}`);
+  }
+}
+
+if (needsYou.length > 0) {
+  console.log();
+  console.log(Y(`  ${needsYou.length} required field${needsYou.length !== 1 ? "s" : ""} need your input (TODO stubs added to end of file):`));
+  for (const key of needsYou) {
+    console.log(`  ${Y("→")} ${B(key)}`);
+  }
+}
+
+const remaining = errors - applied.length;
+console.log();
+if (remaining <= 0) {
+  console.log(G(`  ✓ All fixable errors resolved. Run  pnpm check-config  to verify.\n`));
   gha.endgroup();
-  gha.notice(`Config valid with ${warnings} warning${warnings !== 1 ? "s" : ""}. See details above.`);
+  process.exit(0);
 } else {
-  console.log(G(`  ✓ Everything looks great — your config is fully set up!\n`));
+  console.log(Y(`  ${remaining} error${remaining !== 1 ? "s" : ""} still need manual attention — see the ✗ items above.\n`));
   gha.endgroup();
+  process.exit(1);
 }

@@ -11,6 +11,7 @@
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check-config": "node scripts/check-config.mjs",
+    "fix-config": "node scripts/check-config.mjs --fix",
     "upgrade-template": "node scripts/upgrade-template.mjs"
   },
   "devDependencies": {
