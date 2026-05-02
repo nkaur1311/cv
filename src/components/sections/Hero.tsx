@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Download, Share2, MapPin, ArrowDown, CheckCircle } from "lucide-react";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { motion } from "framer-motion";
@@ -23,7 +23,7 @@ function Avatar() {
     .toUpperCase();
   return (
     <div
-      className="w-28 h-28 rounded-2xl flex items-center justify-center text-3xl font-bold font-serif text-primary-foreground ring-2 ring-primary/30"
+      className="w-28 h-28 rounded-2xl flex items-center justify-center text-3xl font-serif font-bold text-primary-foreground ring-2 ring-primary/30"
       style={{
         background: "linear-gradient(135deg, hsl(var(--primary)), hsl(250 84% 80%))",
       }}
@@ -31,6 +31,38 @@ function Avatar() {
     >
       {initials}
     </div>
+  );
+}
+
+function TypewriterText({ text }: { text: string }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    const delay = 600;
+    const speed = 38;
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [text]);
+
+  return (
+    <p className="text-base md:text-lg text-muted-foreground max-w-xl font-light tracking-wide leading-relaxed">
+      {displayed}
+      {!done && (
+        <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 align-middle animate-pulse" />
+      )}
+    </p>
   );
 }
 
@@ -62,16 +94,16 @@ export function Hero() {
     >
       {/* Background grid */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20"
+        className="absolute inset-0 pointer-events-none opacity-25 dark:opacity-15"
         style={{
           backgroundImage:
-            "radial-gradient(hsl(var(--primary) / 0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
+            "radial-gradient(hsl(var(--primary) / 0.12) 1px, transparent 1px)",
+          backgroundSize: "44px 44px",
         }}
       />
       {/* Glow blob */}
       <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full pointer-events-none opacity-20 blur-3xl"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none opacity-15 blur-3xl"
         style={{
           background:
             "radial-gradient(ellipse, hsl(var(--primary)), transparent 70%)",
@@ -82,7 +114,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
         >
           <Avatar />
         </motion.div>
@@ -90,29 +122,35 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
           className="flex flex-col items-center gap-3"
         >
           {config.openToWork && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium tracking-wide bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              Open to work
+              Open to opportunities
             </span>
           )}
-          <h1 className="text-5xl md:text-7xl font-serif font-bold tracking-tight text-foreground">
-            {config.name}
+
+          {/* Name — editorial serif */}
+          <h1 className="text-6xl md:text-8xl font-serif font-light tracking-tight text-foreground leading-none">
+            {config.name.split(" ").map((word, i) => (
+              <span key={i} className={i === 1 ? "italic" : ""}>
+                {i > 0 ? " " : ""}{word}
+              </span>
+            ))}
           </h1>
-          <p className="text-xl md:text-2xl font-medium text-primary">
+
+          {/* Title — small caps / spaced sans */}
+          <p className="text-sm font-medium tracking-[0.22em] text-primary uppercase mt-1">
             {config.title}
           </p>
-          {config.tagline && (
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl">
-              {config.tagline}
-            </p>
-          )}
+
+          {config.tagline && <TypewriterText text={config.tagline} />}
+
           {config.location && (
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin size={14} />
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground tracking-wider uppercase font-medium mt-1">
+              <MapPin size={12} />
               {config.location}
             </p>
           )}
@@ -121,7 +159,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="flex items-center gap-3 flex-wrap justify-center"
         >
           {config.social.github && (
@@ -133,7 +171,7 @@ export function Hero() {
               aria-label="GitHub"
               data-testid="link-github"
             >
-              <FaGithub size={20} />
+              <FaGithub size={18} />
             </a>
           )}
           {config.social.linkedin && (
@@ -145,7 +183,7 @@ export function Hero() {
               aria-label="LinkedIn"
               data-testid="link-linkedin"
             >
-              <FaLinkedin size={20} />
+              <FaLinkedin size={18} />
             </a>
           )}
           {config.social.twitter && (
@@ -157,7 +195,7 @@ export function Hero() {
               aria-label="Twitter"
               data-testid="link-twitter"
             >
-              <FaXTwitter size={20} />
+              <FaXTwitter size={18} />
             </a>
           )}
         </motion.div>
@@ -165,7 +203,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
           className="flex items-center gap-3 flex-wrap justify-center"
         >
           <a
@@ -174,7 +212,7 @@ export function Hero() {
               e.preventDefault();
               document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
+            className="px-7 py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm tracking-wide hover:opacity-90 transition-opacity"
             data-testid="button-view-work"
           >
             View My Work
@@ -182,25 +220,25 @@ export function Hero() {
           <a
             href={config.resumeUrl}
             download={config.resumeFileName}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm hover:bg-secondary hover:border-primary/40 transition-all"
+            className="flex items-center gap-2 px-7 py-3 rounded-xl border border-border text-foreground font-medium text-sm tracking-wide hover:bg-secondary hover:border-primary/40 transition-all"
             data-testid="button-download-resume-hero"
           >
-            <Download size={15} />
+            <Download size={14} />
             Download Resume
           </a>
           <button
             onClick={handleShare}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground font-semibold text-sm hover:bg-secondary hover:border-primary/40 transition-all"
+            className="flex items-center gap-2 px-7 py-3 rounded-xl border border-border text-foreground font-medium text-sm tracking-wide hover:bg-secondary hover:border-primary/40 transition-all"
             data-testid="button-share-resume"
           >
             {copied ? (
               <>
-                <CheckCircle size={15} className="text-green-500" />
-                Link Copied!
+                <CheckCircle size={14} className="text-green-500" />
+                Link Copied
               </>
             ) : (
               <>
-                <Share2 size={15} />
+                <Share2 size={14} />
                 Share Resume
               </>
             )}
@@ -211,13 +249,13 @@ export function Hero() {
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
+        transition={{ duration: 0.5, delay: 1.2 }}
         onClick={handleScrollDown}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors animate-bounce"
         aria-label="Scroll down"
         data-testid="button-scroll-down"
       >
-        <ArrowDown size={20} />
+        <ArrowDown size={18} />
       </motion.button>
     </section>
   );

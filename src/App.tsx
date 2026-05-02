@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { PortfolioPage } from "@/pages/portfolio";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import { config } from "@/portfolio.config";
 
 function App() {
@@ -24,7 +25,12 @@ function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
-  return <PortfolioPage theme={theme} onToggleTheme={toggleTheme} />;
+  return (
+    <>
+      <CustomCursor />
+      <PortfolioPage theme={theme} onToggleTheme={toggleTheme} />
+    </>
+  );
 }
 
 export default App;
