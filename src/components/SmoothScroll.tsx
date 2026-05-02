@@ -1,39 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Lenis from "lenis";
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<Lenis | null>(null);
-
   useEffect(() => {
+    // Respect the OS "Reduce motion" accessibility setting.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({
-      lerp:            0.08,   // 1.x API: controls smoothing (lower = smoother)
+      lerp:            0.08, // lower = more gradual / more butter-smooth
       orientation:     "vertical",
       smoothWheel:     true,
       wheelMultiplier: 0.9,
       touchMultiplier: 1.8,
     });
 
-    lenisRef.current = lenis;
-
+    // Drive Lenis on every animation frame.
     let rafId: number;
-    function raf(time: number) {
+    function tick(time: number) {
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(tick);
     }
-    rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(tick);
 
+    // Let Lenis handle section-anchor clicks (e.g. "#about").
+    // Skip wouter hash-routes (e.g. "#/blog") — those contain a "/" after "#".
     const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest("a[href^='#']") as HTMLAnchorElement | null;
+      const anchor = (e.target as HTMLElement).closest("a[href^='#']") as HTMLAnchorElement | null;
       if (!anchor) return;
-      const id = anchor.getAttribute("href");
-      if (!id || id.includes("/")) return;
-      const el = document.querySelector(id);
-      if (!el) return;
+      const href = anchor.getAttribute("href");
+      if (!href || href.includes("/")) return;
+      const target = document.querySelector(href);
+      if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(el as HTMLElement, { offset: -64, duration: 1.6 });
+      lenis.scrollTo(target as HTMLElement, { offset: -64, duration: 1.6 });
     };
     document.addEventListener("click", handleAnchorClick);
 

@@ -1,6 +1,11 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 
+// Fonts are self-hosted via @fontsource so the browser never needs to make a
+// cross-origin request to Google Fonts.  Vite inlines the @font-face rules into
+// the CSS bundle and copies the .woff2 files into dist/assets — same origin,
+// proper cache headers, no render-blocking network round trips.
+// We import each weight individually so unused weights are not included.
 import "@fontsource/inter/300.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";

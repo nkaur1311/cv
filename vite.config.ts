@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import type { Plugin, ViteDevServer } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import yaml from "@rollup/plugin-yaml";
@@ -40,26 +41,21 @@ function walkMd(dir: string): string[] {
   return results;
 }
 
-function parseFmForRss(raw: string) {
-  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!m) return { title: "", date: "", excerpt: "", tags: [] as string[] };
-  const data: Record<string, unknown> = {};
-  for (const line of m[1].split("\n")) {
-    const ci = line.indexOf(":");
-    if (ci < 1) continue;
-    const k = line.slice(0, ci).trim();
-    const v = line.slice(ci + 1).trim();
-    data[k] = v.startsWith("[") && v.endsWith("]")
-      ? v.slice(1, -1).split(",").map((s) => s.trim().replace(/^["']|["']$/g, "")).filter(Boolean)
-      : v.replace(/^["']|["']$/g, "");
-  }
-  const body = raw.replace(/^---[\s\S]*?---\r?\n?/, "");
-  const excerpt = (data.excerpt as string) ??
-    body.replace(/^#+\s.*/gm, "").replace(/[*`_[\]]/g, "").trim().slice(0, 180) + "…";
+type FrontMatter = { title: string; date: string; excerpt: string; tags: string[] };
+
+function parseFmForRss(raw: string): FrontMatter {
+  const fmMatch  = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const body     = raw.replace(/^---[\s\S]*?---\r?\n?/, "");
+  const data     = fmMatch ? (jsYaml.load(fmMatch[1]) as Record<string, unknown>) ?? {} : {};
+  const autoExcerpt = body
+    .replace(/^#+\s.*/gm, "")
+    .replace(/[*`_[\]]/g, "")
+    .trim()
+    .slice(0, 180) + "…";
   return {
-    title:   (data.title   as string) ?? "",
-    date:    (data.date    as string) ?? "",
-    excerpt,
+    title:   String(data.title   ?? ""),
+    date:    String(data.date    ?? ""),
+    excerpt: String(data.excerpt ?? autoExcerpt),
     tags:    Array.isArray(data.tags) ? (data.tags as string[]) : [],
   };
 }
@@ -108,17 +104,13 @@ function buildRssXml(rootDir: string): string {
 </rss>`;
 }
 
-function gitvitaRssPlugin(rootDir: string) {
+function gitvitaRssPlugin(rootDir: string): Plugin {
   return {
     name: "gitvita-rss",
     generateBundle() {
-      (this as unknown as { emitFile: (o: object) => void }).emitFile({
-        type:     "asset",
-        fileName: "rss.xml",
-        source:   buildRssXml(rootDir),
-      });
+      this.emitFile({ type: "asset", fileName: "rss.xml", source: buildRssXml(rootDir) });
     },
-    configureServer(server: { middlewares: { use: (path: string, fn: (req: unknown, res: { setHeader: (k: string, v: string) => void; end: (s: string) => void }) => void) => void } }) {
+    configureServer(server: ViteDevServer) {
       server.middlewares.use("/rss.xml", (_req, res) => {
         res.setHeader("Content-Type", "application/rss+xml; charset=utf-8");
         res.end(buildRssXml(rootDir));
@@ -180,6 +172,50 @@ function metaAndSchemaPlugin() {
   };
 }
 
+// ── Font preload plugin ────────────────────────────────────────────────────────
+// After the bundle is generated, collects the hashed woff2 filenames for
+// above-the-fold fonts and injects <link rel="preload"> into the HTML.
+// This tells the browser to start fetching the fonts before it even parses
+// the CSS, shaving time off the first paint.
+
+const PRELOAD_FONT_PATTERNS = [
+  "inter-latin-400-normal",
+  "inter-latin-500-normal",
+  "cormorant-garamond-latin-300-normal",
+  "cormorant-garamond-latin-300-italic",
+];
+
+function preloadCriticalFontsPlugin(): Plugin {
+  const queue: string[] = [];
+
+  return {
+    name: "gitvita-preload-fonts",
+    generateBundle(_options, bundle) {
+      for (const asset of Object.values(bundle)) {
+        if (
+          asset.type === "asset" &&
+          "fileName" in asset &&
+          typeof asset.fileName === "string" &&
+          asset.fileName.endsWith(".woff2") &&
+          PRELOAD_FONT_PATTERNS.some(p => asset.fileName.includes(p))
+        ) {
+          queue.push(asset.fileName);
+        }
+      }
+    },
+    transformIndexHtml: {
+      order: "post",
+      handler() {
+        return queue.map(file => ({
+          tag:      "link" as const,
+          attrs:    { rel: "preload", href: `${basePath}${file}`, as: "font", type: "font/woff2", crossorigin: "" },
+          injectTo: "head" as const,
+        }));
+      },
+    },
+  };
+}
+
 const isReplit = !!process.env.REPL_ID;
 
 export default defineConfig({
@@ -189,6 +225,7 @@ export default defineConfig({
     tailwindcss(),
     yaml(),
     metaAndSchemaPlugin(),
+    preloadCriticalFontsPlugin(),
     gitvitaRssPlugin(path.resolve(import.meta.dirname)),
     ...(isReplit
       ? [
@@ -211,12 +248,20 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
+        // Separate vendor chunks so browsers can cache library code independently
+        // from app code.  Libraries change far less often than the portfolio itself.
         manualChunks: {
           "vendor-react":  ["react", "react-dom"],
           "vendor-motion": ["framer-motion"],
           "vendor-lenis":  ["lenis"],
           "vendor-router": ["wouter"],
           "vendor-icons":  ["lucide-react"],
+        },
+        // Keep font files in a dedicated subfolder so they're easy to find in dist/.
+        assetFileNames(info) {
+          const name = info.names?.[0] ?? info.name ?? "";
+          if (/\.(woff2?|ttf|eot)$/.test(name)) return "assets/fonts/[name][extname]";
+          return "assets/[name]-[hash][extname]";
         },
       },
     },
