@@ -28,7 +28,7 @@ function PortfolioWithChrome({
   showDemoBanner: boolean;
 }) {
   const [demoBannerVisible, setDemoBannerVisible] = useState(
-    showDemoBanner && localStorage.getItem("git-vita-demo-dismissed") !== "1"
+    showDemoBanner && localStorage.getItem("gitvitae-demo-dismissed") !== "1"
   );
   const [openToWorkVisible, setOpenToWorkVisible] = useState(config.openToWork);
 

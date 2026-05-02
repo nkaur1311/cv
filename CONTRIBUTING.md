@@ -93,9 +93,9 @@ docs: clarify avatarUrl in README
 If you've forked or templated this repo and want to pull in new features:
 
 ```bash
-git remote add git-vita https://github.com/git-vita/git-vita.github.io
-git fetch git-vita
-git merge git-vita/main --allow-unrelated-histories
+git remote add gitvitae https://github.com/gitvitae/gitvitae.github.io
+git fetch gitvitae
+git merge gitvitae/main --allow-unrelated-histories
 # resolve any conflicts — they'll only be in files you've changed
 ```
 

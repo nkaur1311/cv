@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, GitFork } from "lucide-react";
 
-const DISMISS_KEY = "git-vita-demo-dismissed";
+const DISMISS_KEY = "gitvitae-demo-dismissed";
 
 interface DemoBannerProps {
   onDismiss: () => void;

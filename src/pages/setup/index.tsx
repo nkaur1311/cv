@@ -223,8 +223,8 @@ function UseTemplateMockup() {
         {/* Repo header */}
         <div className="flex items-center gap-2 mb-3">
           <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">GV</div>
-          <span className="text-xs text-muted-foreground">git-vita / </span>
-          <span className="text-xs font-semibold text-foreground">git-vita.github.io</span>
+          <span className="text-xs text-muted-foreground">gitvitae / </span>
+          <span className="text-xs font-semibold text-foreground">gitvitae.github.io</span>
         </div>
         <p className="text-[11px] text-muted-foreground mb-4">
           A free portfolio website template — edit one file, go live in minutes.
