@@ -18,6 +18,13 @@
 
   "_colorPreset_options": "indigo | emerald | rose | amber | ocean | slate | custom",
 
+  "resumeTheme": {
+    "twoColumn": "indigo",
+    "classic": "emerald"
+  },
+
+  "_resumeTheme_note": "Color accent per resume layout. Same options as colorPreset.",
+
   "social": {
     "github": "https://github.com/yourusername",
     "linkedin": "https://linkedin.com/in/yourusername",

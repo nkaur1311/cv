@@ -48,6 +48,16 @@ export interface Testimonial {
   photoUrl:     string;   // URL to headshot — leave empty for initials
 }
 
+export interface ResumeTheme {
+  twoColumn: ColorPreset;
+  classic:   ColorPreset;
+}
+
+const raw = rawConfig as unknown as {
+  customColors?: PresetPalette;
+  resumeTheme?:  { twoColumn?: string; classic?: string };
+};
+
 export const config = {
   ...rawConfig,
   colorPreset:    rawConfig.colorPreset  as ColorPreset,
@@ -56,5 +66,9 @@ export const config = {
   languages:      (rawConfig.languages      ?? []) as Language[],
   certifications: (rawConfig.certifications ?? []) as Certification[],
   testimonials:   (rawConfig.testimonials   ?? []) as Testimonial[],
-  customColors:   (rawConfig as unknown as { customColors?: PresetPalette }).customColors,
+  customColors:   raw.customColors,
+  resumeTheme: {
+    twoColumn: (raw.resumeTheme?.twoColumn ?? rawConfig.colorPreset) as ColorPreset,
+    classic:   (raw.resumeTheme?.classic   ?? rawConfig.colorPreset) as ColorPreset,
+  } as ResumeTheme,
 };

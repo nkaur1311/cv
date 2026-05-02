@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Printer, ArrowLeft, Columns2, AlignJustify,
@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { config } from "@/portfolio.config";
+import { applyThemePalette } from "@/lib/themes";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -299,6 +300,17 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
     localStorage.setItem("resume-layout", l);
   };
 
+  // Swap accent color to match the selected layout
+  useEffect(() => {
+    const preset = layout === "two-column"
+      ? config.resumeTheme.twoColumn
+      : config.resumeTheme.classic;
+    applyThemePalette(preset, theme === "dark", config.customColors);
+    return () => {
+      applyThemePalette(config.colorPreset, theme === "dark", config.customColors);
+    };
+  }, [layout, theme]);
+
   return (
     <div className="min-h-screen bg-muted/40 print:bg-white">
 
@@ -341,14 +353,13 @@ export function ResumePage({ theme, onToggleTheme }: ResumePageProps) {
 
         {/* Right controls */}
         <div className="flex items-center gap-2">
-          <a
-            href={config.resumeUrl}
-            download={config.resumeFileName}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-foreground text-xs font-medium tracking-wide hover:bg-secondary hover:border-primary/40 transition-all"
+          <button
+            onClick={() => window.print()}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-medium tracking-wide hover:opacity-90 transition-opacity"
           >
             <Printer size={13} />
-            Download
-          </a>
+            Save PDF
+          </button>
         </div>
       </div>
 
