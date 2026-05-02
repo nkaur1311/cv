@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
+import { Router, Route, Switch } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import { PortfolioPage } from "@/pages/portfolio";
+import { ResumePage } from "@/pages/resume";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScrollProvider } from "@/components/ui/SmoothScroll";
 import { OpenToWorkBanner } from "@/components/ui/OpenToWorkBanner";
@@ -34,17 +37,32 @@ function App() {
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
-    <SmoothScrollProvider>
-      <CustomCursor />
-      <OpenToWorkBanner onDismiss={() => setBannerVisible(false)} />
-      {/* Shift page content down by banner height when it's visible */}
-      <div
-        className="transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ paddingTop: bannerVisible ? "40px" : "0px" }}
-      >
-        <PortfolioPage theme={theme} onToggleTheme={toggleTheme} bannerVisible={bannerVisible} />
-      </div>
-    </SmoothScrollProvider>
+    <Router hook={useHashLocation}>
+      <Switch>
+        {/* Resume page — no banner, no smooth scroll, no custom cursor */}
+        <Route path="/resume">
+          <ResumePage theme={theme} onToggleTheme={toggleTheme} />
+        </Route>
+
+        {/* Portfolio page */}
+        <Route>
+          <SmoothScrollProvider>
+            <CustomCursor />
+            <OpenToWorkBanner onDismiss={() => setBannerVisible(false)} />
+            <div
+              className="transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ paddingTop: bannerVisible ? "40px" : "0px" }}
+            >
+              <PortfolioPage
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                bannerVisible={bannerVisible}
+              />
+            </div>
+          </SmoothScrollProvider>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

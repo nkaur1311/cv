@@ -221,13 +221,20 @@ export function Hero() {
             View My Work
           </a>
           <a
+            href="#/resume"
+            className="flex items-center gap-2 px-7 py-3 rounded-xl border border-primary/40 text-primary font-medium text-sm tracking-wide hover:bg-primary/5 transition-all"
+            data-testid="button-view-resume"
+          >
+            <Download size={14} />
+            View Resume
+          </a>
+          <a
             href={config.resumeUrl}
             download={config.resumeFileName}
             className="flex items-center gap-2 px-7 py-3 rounded-xl border border-border text-foreground font-medium text-sm tracking-wide hover:bg-secondary hover:border-primary/40 transition-all"
             data-testid="button-download-resume-hero"
           >
-            <Download size={14} />
-            Download Resume
+            Download PDF
           </a>
           <button
             onClick={handleShare}
