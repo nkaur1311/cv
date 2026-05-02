@@ -6,8 +6,11 @@ import { ResumePage } from "@/pages/resume";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SmoothScrollProvider } from "@/components/SmoothScroll";
 import { OpenToWorkBanner } from "@/components/OpenToWorkBanner";
+import { DemoBanner } from "@/components/DemoBanner";
 import { applyThemePalette } from "@/lib/themes";
 import { config } from "@/portfolio.config";
+
+const IS_DEMO = import.meta.env.VITE_DEMO_MODE === "true";
 
 function App() {
   const [theme, setTheme] = useState<string>(() => {
@@ -19,7 +22,10 @@ function App() {
     return config.defaultTheme;
   });
 
-  const [bannerVisible, setBannerVisible] = useState(config.openToWork);
+  const [demoBannerVisible, setDemoBannerVisible] = useState(
+    IS_DEMO && localStorage.getItem("git-vita-demo-dismissed") !== "1"
+  );
+  const [openToWorkVisible, setOpenToWorkVisible] = useState(config.openToWork);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -36,6 +42,10 @@ function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
+  // Each visible banner adds 40px to the top offset
+  const demoBannerHeight = demoBannerVisible ? 40 : 0;
+  const totalTopOffset = demoBannerHeight + (openToWorkVisible ? 40 : 0);
+
   return (
     <Router hook={useHashLocation}>
       <Switch>
@@ -49,15 +59,19 @@ function App() {
         <Route>
           <SmoothScrollProvider>
             <CustomCursor />
-            <OpenToWorkBanner onDismiss={() => setBannerVisible(false)} />
+            <DemoBanner onDismiss={() => setDemoBannerVisible(false)} />
+            <OpenToWorkBanner
+              onDismiss={() => setOpenToWorkVisible(false)}
+              topOffset={demoBannerHeight}
+            />
             <div
               className="transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{ paddingTop: bannerVisible ? "40px" : "0px" }}
+              style={{ paddingTop: `${totalTopOffset}px` }}
             >
               <PortfolioPage
                 theme={theme}
                 onToggleTheme={toggleTheme}
-                bannerVisible={bannerVisible}
+                bannerVisible={openToWorkVisible}
               />
             </div>
           </SmoothScrollProvider>

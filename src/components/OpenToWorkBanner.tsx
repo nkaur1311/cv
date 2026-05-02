@@ -5,9 +5,10 @@ import { config } from "@/portfolio.config";
 
 interface OpenToWorkBannerProps {
   onDismiss: () => void;
+  topOffset?: number;
 }
 
-export function OpenToWorkBanner({ onDismiss }: OpenToWorkBannerProps) {
+export function OpenToWorkBanner({ onDismiss, topOffset = 0 }: OpenToWorkBannerProps) {
   const [dismissed, setDismissed] = useState(false);
 
   if (!config.openToWork) return null;
@@ -25,7 +26,8 @@ export function OpenToWorkBanner({ onDismiss }: OpenToWorkBannerProps) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -48, opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed top-0 left-0 right-0 z-[60] h-10 flex items-center justify-center gap-3 px-4 bg-primary text-primary-foreground text-xs font-medium tracking-wide select-none print:hidden"
+          style={{ top: topOffset }}
+          className="fixed left-0 right-0 z-[60] h-10 flex items-center justify-center gap-3 px-4 bg-primary text-primary-foreground text-xs font-medium tracking-wide select-none print:hidden"
         >
           <span className="relative flex items-center shrink-0">
             <span className="absolute inline-flex h-2 w-2 rounded-full bg-primary-foreground opacity-70 animate-ping" />

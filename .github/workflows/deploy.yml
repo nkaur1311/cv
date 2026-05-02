@@ -46,10 +46,22 @@ jobs:
             echo "value=/${REPO}/" >> $GITHUB_OUTPUT
           fi
 
+      - name: Detect demo mode
+        id: demo
+        run: |
+          REPO="${{ github.event.repository.name }}"
+          OWNER="${{ github.repository_owner }}"
+          if [ "$OWNER" = "git-vita" ] && [ "$REPO" = "git-vita.github.io" ]; then
+            echo "value=true" >> $GITHUB_OUTPUT
+          else
+            echo "value=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build
         run: pnpm build
         env:
           BASE_PATH: ${{ steps.base.outputs.value }}
+          VITE_DEMO_MODE: ${{ steps.demo.outputs.value }}
           NODE_ENV: production
 
       - name: Setup Pages
