@@ -2,14 +2,14 @@
 
 A free, open-source portfolio template for developers and job seekers. Edit one YAML file, push to GitHub, get a live portfolio — no account needed, no hosting fees, no framework knowledge required.
 
-**Live demo:** [gitvita.github.io](https://gitvita.github.io)
+**Live demo:** [git-vita.github.io](https://git-vita.github.io)
 
 ---
 
 ## How it works
 
 ```
-github.com/gitvita/gitvita
+github.com/git-vita/git-vita.github.io
          ↓  Use this template
 github.com/YOU/my-portfolio
          ↓  Edit portfolio.config.yaml
@@ -134,9 +134,9 @@ pnpm dev            # preview at http://localhost:3000
 When GitVita releases new features, merge them without losing your config:
 
 ```bash
-git remote add gitvita https://github.com/gitvita/gitvita
-git fetch gitvita
-git merge gitvita/main --allow-unrelated-histories
+git remote add git-vita https://github.com/git-vita/git-vita.github.io
+git fetch git-vita
+git merge git-vita/main --allow-unrelated-histories
 # conflicts will only be in files you've changed
 ```
 
@@ -158,4 +158,4 @@ React · Vite · TypeScript · Tailwind CSS · Framer Motion
 
 ---
 
-*Built with [GitVita](https://github.com/gitvita/gitvita) — MIT License*
+*Built with [GitVita](https://github.com/git-vita/git-vita.github.io) — MIT License*

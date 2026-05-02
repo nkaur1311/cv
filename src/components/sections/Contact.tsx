@@ -136,7 +136,7 @@ export function Contact() {
             <p className="text-xs text-muted-foreground font-mono tracking-wide">
               Built with{" "}
               <a
-                href="https://github.com/gitvita"
+                href="https://github.com/git-vita"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline underline-offset-2"
