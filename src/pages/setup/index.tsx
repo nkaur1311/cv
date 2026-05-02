@@ -1,0 +1,715 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight, ArrowLeft, ExternalLink, Check,
+  Copy, CheckCircle, ChevronRight,
+} from "lucide-react";
+
+const GITHUB_TEMPLATE_URL = "https://github.com/git-vita/git-vita.github.io/generate";
+const GITHUB_SIGNUP_URL   = "https://github.com/signup";
+const GITHUB_PAGES_DOCS   = "https://docs.github.com/en/pages";
+
+// ─── Copy button ─────────────────────────────────────────────────────────────
+
+function InlineCopy({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handle = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button
+      onClick={handle}
+      className="inline-flex items-center gap-1.5 ml-1 px-2 py-0.5 rounded bg-secondary border border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
+    >
+      {copied ? <CheckCircle size={11} className="text-green-500" /> : <Copy size={11} />}
+      {copied ? "Copied!" : "Copy"}
+    </button>
+  );
+}
+
+// ─── Step 0: Welcome ─────────────────────────────────────────────────────────
+
+function StepWelcome({ onNext }: { onNext: () => void }) {
+  return (
+    <div className="text-center">
+      <div className="text-5xl mb-6">👋</div>
+      <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-4">
+        Let's set up your free portfolio
+      </h2>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-md mx-auto">
+        This takes about <strong className="text-foreground">5 minutes</strong>. We'll walk you through
+        each step with clear pictures so you always know exactly where to click.
+      </p>
+
+      <div className="grid sm:grid-cols-3 gap-4 mb-10 text-left max-w-xl mx-auto">
+        {[
+          { emoji: "🆓", label: "Completely free", sub: "No credit card, no trial" },
+          { emoji: "🖱️", label: "No coding needed", sub: "Just fill in your details" },
+          { emoji: "⚡", label: "Live in 5 minutes", sub: "Automatic publishing" },
+        ].map((item) => (
+          <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl border border-border bg-secondary/30">
+            <span className="text-2xl leading-none">{item.emoji}</span>
+            <div>
+              <p className="text-xs font-semibold text-foreground">{item.label}</p>
+              <p className="text-[11px] text-muted-foreground">{item.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={onNext}
+        className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+      >
+        Let's get started
+        <ArrowRight size={15} />
+      </button>
+    </div>
+  );
+}
+
+// ─── Step 1: Create GitHub account ───────────────────────────────────────────
+
+function GitHubSignupMockup() {
+  return (
+    <div className="rounded-2xl border border-border overflow-hidden shadow-lg bg-background max-w-sm mx-auto">
+      {/* Browser chrome */}
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-secondary border-b border-border">
+        <div className="flex gap-1">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+        </div>
+        <div className="flex-1">
+          <div className="bg-background border border-border rounded px-2 py-0.5 text-[10px] text-muted-foreground font-mono text-center">
+            github.com/signup
+          </div>
+        </div>
+      </div>
+      {/* Page content */}
+      <div className="p-6">
+        <div className="flex justify-center mb-4">
+          <svg height="32" viewBox="0 0 16 16" className="fill-foreground">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+        </div>
+        <h3 className="text-sm font-semibold text-foreground text-center mb-4">Create your account</h3>
+        <div className="space-y-2.5 mb-4">
+          <div>
+            <label className="text-[10px] text-muted-foreground block mb-1">Username</label>
+            <div className="w-full h-7 rounded border border-border bg-secondary text-[11px] text-muted-foreground px-2 flex items-center">
+              janedoe
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] text-muted-foreground block mb-1">Email address</label>
+            <div className="w-full h-7 rounded border border-border bg-secondary text-[11px] text-muted-foreground px-2 flex items-center">
+              jane@example.com
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] text-muted-foreground block mb-1">Password</label>
+            <div className="w-full h-7 rounded border border-border bg-secondary text-[11px] text-muted-foreground px-2 flex items-center">
+              ••••••••••••
+            </div>
+          </div>
+        </div>
+        <div className="w-full py-2 rounded bg-[#2ea44f] text-white text-[11px] font-semibold text-center">
+          Create account
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StepAccount({ onNext }: { onNext: () => void }) {
+  return (
+    <div>
+      <div className="text-center mb-8">
+        <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">Step 1 of 3</p>
+        <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-3">
+          Create a free GitHub account
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+          GitHub is a free service that will host your portfolio website. Think of it as the
+          place where your portfolio "lives." Creating an account takes about 30 seconds.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8 items-start mb-8">
+        <GitHubSignupMockup />
+
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Go to GitHub.com</p>
+              <p className="text-xs text-muted-foreground">Open the link below in a new tab. You'll see a simple sign-up form.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Choose a username</p>
+              <p className="text-xs text-muted-foreground">
+                Your username becomes part of your portfolio address:{" "}
+                <span className="font-mono bg-secondary px-1 rounded text-foreground">
+                  yourusername.github.io
+                </span>. Choose something professional.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Verify your email</p>
+              <p className="text-xs text-muted-foreground">GitHub will send you a quick verification email. Click the link inside it and you're in.</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-primary/5 border border-primary/15">
+            <p className="text-xs text-primary font-medium mb-1">💡 Tip</p>
+            <p className="text-xs text-muted-foreground">
+              Already have a GitHub account? Great — skip straight to the next step!
+            </p>
+          </div>
+
+          <a
+            href={GITHUB_SIGNUP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2ea44f] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+          >
+            Create free account at GitHub.com
+            <ExternalLink size={12} />
+          </a>
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={onNext}
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          I have an account — continue
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 2: Copy the template ────────────────────────────────────────────────
+
+function UseTemplateMockup() {
+  return (
+    <div className="rounded-2xl border border-border overflow-hidden shadow-lg bg-background max-w-sm mx-auto">
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-secondary border-b border-border">
+        <div className="flex gap-1">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+        </div>
+        <div className="flex-1">
+          <div className="bg-background border border-border rounded px-2 py-0.5 text-[10px] text-muted-foreground font-mono text-center truncate">
+            github.com/git-vita/git-vita.github.io
+          </div>
+        </div>
+      </div>
+      <div className="p-5">
+        {/* Repo header */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold">GV</div>
+          <span className="text-xs text-muted-foreground">git-vita / </span>
+          <span className="text-xs font-semibold text-foreground">git-vita.github.io</span>
+        </div>
+        <p className="text-[11px] text-muted-foreground mb-4">
+          A free portfolio website template — edit one file, go live in minutes.
+        </p>
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          <div className="flex-1 py-1.5 text-center text-[11px] rounded border border-border text-muted-foreground bg-secondary">
+            ⭐ Star
+          </div>
+          {/* Highlighted button */}
+          <div className="flex-1 py-1.5 text-center text-[11px] rounded bg-[#2ea44f] text-white font-semibold ring-2 ring-[#2ea44f] ring-offset-2 ring-offset-background">
+            Use this template ▾
+          </div>
+        </div>
+        <div className="mt-3 p-2 rounded border-2 border-dashed border-primary/30 bg-primary/5 text-center">
+          <span className="text-[10px] text-primary font-medium">👆 Click this green button</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NamingMockup() {
+  return (
+    <div className="rounded-xl border border-border overflow-hidden shadow-md bg-background">
+      <div className="px-4 py-3 border-b border-border bg-secondary">
+        <p className="text-[11px] text-muted-foreground font-mono">Create a new repository from template</p>
+      </div>
+      <div className="p-4 space-y-3">
+        <div>
+          <label className="text-[10px] text-muted-foreground block mb-1">Repository name <span className="text-red-400">*</span></label>
+          <div className="flex items-center gap-1 text-[11px]">
+            <span className="text-muted-foreground bg-secondary px-2 py-1.5 rounded-l border border-border">janedoe /</span>
+            <div className="flex-1 bg-background border border-primary rounded-r px-2 py-1.5 font-mono text-foreground font-semibold ring-1 ring-primary">
+              janedoe.github.io
+            </div>
+          </div>
+          <p className="text-[10px] text-primary mt-1">✓ Use your own username here</p>
+        </div>
+        <div className="py-2 rounded bg-[#2ea44f] text-white text-[11px] font-semibold text-center">
+          Create repository from template
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StepTemplate({ onNext }: { onNext: () => void }) {
+  return (
+    <div>
+      <div className="text-center mb-8">
+        <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">Step 2 of 3</p>
+        <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-3">
+          Copy the portfolio template
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+          You're going to make your own personal copy of the GitVita template. Think of it
+          like duplicating a document — your copy is completely yours to edit.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8 items-start mb-6">
+        <div className="space-y-4">
+          <UseTemplateMockup />
+          <div className="mt-2">
+            <NamingMockup />
+          </div>
+        </div>
+
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Open the template page</p>
+              <p className="text-xs text-muted-foreground">Click the button below. You'll land on the GitVita template page on GitHub.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Click "Use this template"</p>
+              <p className="text-xs text-muted-foreground">You'll see a green button near the top. Click it and choose "Create a new repository."</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Name your repository</p>
+              <p className="text-xs text-muted-foreground">
+                In the "Repository name" box, type exactly:
+              </p>
+              <div className="mt-1.5 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-secondary border border-border font-mono text-xs text-foreground">
+                <span className="text-muted-foreground">yourusername</span>
+                <span>.github.io</span>
+                <InlineCopy text="yourusername.github.io" />
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1">Replace "yourusername" with your actual GitHub username.</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Click "Create repository"</p>
+              <p className="text-xs text-muted-foreground">That's it! Your copy of the template is now ready to personalise.</p>
+            </div>
+          </div>
+
+          <a
+            href={GITHUB_TEMPLATE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2ea44f] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+          >
+            Open the template on GitHub
+            <ExternalLink size={12} />
+          </a>
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={onNext}
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          I've copied the template — continue
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 3: Edit your details ────────────────────────────────────────────────
+
+function FileEditorMockup() {
+  return (
+    <div className="rounded-2xl border border-border overflow-hidden shadow-lg bg-background max-w-sm mx-auto">
+      <div className="flex items-center gap-2 px-3 py-2.5 bg-secondary border-b border-border">
+        <div className="flex gap-1">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+        </div>
+        <div className="flex-1">
+          <div className="bg-background border border-border rounded px-2 py-0.5 text-[10px] text-muted-foreground font-mono text-center truncate">
+            github.com / janedoe / janedoe.github.io
+          </div>
+        </div>
+      </div>
+      {/* File browser row */}
+      <div className="px-4 py-2 border-b border-border bg-secondary/50 flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span className="text-primary font-medium">janedoe.github.io</span>
+          <ChevronRight size={10} />
+          <span className="font-mono text-foreground font-semibold">portfolio.config.yaml</span>
+        </div>
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#2ea44f] text-white text-[10px] font-semibold">
+          ✏️ Edit
+        </div>
+      </div>
+      {/* File content */}
+      <div className="p-4 font-mono text-[11px] leading-relaxed">
+        <div className="text-primary/50"># Fill in your details below</div>
+        <div className="mt-1">
+          <span className="text-blue-500 dark:text-blue-400">name</span>:{" "}
+          <span className="bg-yellow-200/60 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 px-1 rounded">"Alex Rivera"</span>
+          <span className="text-primary/40 text-[10px] ml-1">← change this</span>
+        </div>
+        <div>
+          <span className="text-blue-500 dark:text-blue-400">title</span>:{" "}
+          <span className="bg-yellow-200/60 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 px-1 rounded">"Full-Stack Engineer"</span>
+        </div>
+        <div>
+          <span className="text-blue-500 dark:text-blue-400">email</span>:{" "}
+          <span className="bg-yellow-200/60 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 px-1 rounded">"alex@example.com"</span>
+        </div>
+        <div>
+          <span className="text-blue-500 dark:text-blue-400">location</span>:{" "}
+          <span className="text-green-600 dark:text-green-400">"San Francisco, CA"</span>
+        </div>
+        <div className="mt-1 text-primary/50"># Don't forget to change siteMode!</div>
+        <div>
+          <span className="text-blue-500 dark:text-blue-400">siteMode</span>:{" "}
+          <span className="bg-yellow-200/60 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 px-1 rounded">"landing"</span>
+          <span className="text-primary/40 text-[10px] ml-1">← change to "portfolio"</span>
+        </div>
+        <div className="mt-1 text-foreground/20">...</div>
+      </div>
+      <div className="px-4 pb-4">
+        <div className="w-full py-1.5 rounded bg-[#2ea44f] text-white text-[11px] font-semibold text-center">
+          Commit changes
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StepEdit({ onNext }: { onNext: () => void }) {
+  const fields = [
+    { field: "name",     desc: "Your full name",             example: '"Jane Doe"' },
+    { field: "title",    desc: "Your job title or role",     example: '"UX Designer"' },
+    { field: "email",    desc: "Your email address",         example: '"jane@example.com"' },
+    { field: "tagline",  desc: "One line about yourself",    example: '"I design things people love."' },
+    { field: "location", desc: "Where you're based",         example: '"London, UK"' },
+    { field: "siteMode", desc: "Change to show your portfolio", example: '"portfolio"' },
+  ];
+
+  return (
+    <div>
+      <div className="text-center mb-8">
+        <p className="text-xs font-mono tracking-widest text-primary uppercase mb-2">Step 3 of 3</p>
+        <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-3">
+          Fill in your details
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+          In your new repository, find and open the file called{" "}
+          <span className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground text-xs">
+            portfolio.config.yaml
+          </span>. Replace the placeholder text with your own information.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8 items-start mb-6">
+        <FileEditorMockup />
+
+        <div className="space-y-4">
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Open the settings file</p>
+              <p className="text-xs text-muted-foreground">
+                In your new repository, click on the file called{" "}
+                <span className="font-mono bg-secondary px-1 rounded text-foreground">portfolio.config.yaml</span>.
+                Then click the pencil icon (✏️) to edit it.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Replace the highlighted fields</p>
+              <p className="text-xs text-muted-foreground mb-3">
+                Look for lines that have a colon (<span className="font-mono">:</span>) and replace the text in quotation marks. Start with these key fields:
+              </p>
+              <div className="rounded-xl border border-border overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="bg-secondary border-b border-border">
+                      <th className="px-3 py-2 text-left font-medium text-muted-foreground">Field</th>
+                      <th className="px-3 py-2 text-left font-medium text-muted-foreground">What to put</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fields.map((f, i) => (
+                      <tr key={f.field} className={i % 2 === 0 ? "" : "bg-secondary/30"}>
+                        <td className="px-3 py-2 font-mono text-primary">{f.field}</td>
+                        <td className="px-3 py-2 text-muted-foreground">{f.desc}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Save your changes</p>
+              <p className="text-xs text-muted-foreground">
+                Scroll to the bottom and click the green{" "}
+                <strong className="text-foreground">"Commit changes"</strong> button.
+                Your portfolio will update automatically within 1–2 minutes.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
+            <p className="text-xs text-amber-700 dark:text-amber-400 font-medium mb-1">⚠️ Important</p>
+            <p className="text-xs text-amber-700/80 dark:text-amber-400/80">
+              Don't forget to change <span className="font-mono">siteMode</span> from{" "}
+              <span className="font-mono">"landing"</span> to{" "}
+              <span className="font-mono">"portfolio"</span> — otherwise you'll still see the
+              GitVita introduction page instead of your portfolio.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={onNext}
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          I've saved my changes — finish!
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 4: All done ─────────────────────────────────────────────────────────
+
+function StepDone() {
+  const NEXT_STEPS = [
+    {
+      emoji: "🎨",
+      title: "Change your colour theme",
+      desc: "Edit the colorPreset field in your settings file. Try: indigo, emerald, rose, amber, ocean.",
+    },
+    {
+      emoji: "📸",
+      title: "Add your photo",
+      desc: "Upload a photo to your repository and paste the link in the avatarUrl field.",
+    },
+    {
+      emoji: "📄",
+      title: "Print your resume",
+      desc: "Visit /resume on your portfolio to see a beautiful printable resume — all generated from your settings file.",
+    },
+    {
+      emoji: "🔗",
+      title: "Add your own domain",
+      desc: 'In your repository settings, find "Pages" and add your custom domain (e.g. janedoe.com).',
+    },
+  ];
+
+  return (
+    <div className="text-center">
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        🎉
+      </motion.div>
+      <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-4">
+        You're all set!
+      </h2>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-3 max-w-md mx-auto">
+        GitHub is now publishing your portfolio. This usually takes{" "}
+        <strong className="text-foreground">1–2 minutes</strong>. Once it's ready,
+        visit your portfolio at:
+      </p>
+      <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary border border-border font-mono text-sm text-foreground mb-8">
+        https://<span className="text-primary">yourusername</span>.github.io
+        <InlineCopy text="https://yourusername.github.io" />
+      </div>
+
+      <p className="text-sm font-medium text-foreground mb-6">What to do next</p>
+      <div className="grid sm:grid-cols-2 gap-4 text-left mb-10 max-w-xl mx-auto">
+        {NEXT_STEPS.map((step) => (
+          <div
+            key={step.title}
+            className="p-4 rounded-xl border border-border hover:border-primary/30 hover:bg-secondary/30 transition-all"
+          >
+            <div className="text-2xl mb-2">{step.emoji}</div>
+            <p className="text-xs font-semibold text-foreground mb-1">{step.title}</p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a
+          href="#/demo"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+        >
+          See the live demo again
+        </a>
+        <a
+          href="https://github.com/git-vita/git-vita.github.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          View on GitHub
+          <ExternalLink size={13} />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+
+function ProgressBar({ current, total }: { current: number; total: number }) {
+  const labels = ["Welcome", "GitHub account", "Copy template", "Your details", "Done!"];
+  return (
+    <div className="mb-10">
+      <div className="flex items-center gap-2 mb-3">
+        {Array.from({ length: total }).map((_, i) => (
+          <div key={i} className="flex-1 relative">
+            <div
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                i < current ? "bg-primary" : i === current ? "bg-primary/50" : "bg-border"
+              }`}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between">
+        {labels.map((label, i) => (
+          <span
+            key={label}
+            className={`text-[10px] font-medium transition-colors ${
+              i === current ? "text-primary" : i < current ? "text-muted-foreground" : "text-border"
+            } hidden sm:block`}
+          >
+            {i < current ? <Check size={10} className="inline mr-0.5" /> : null}
+            {label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main wizard ──────────────────────────────────────────────────────────────
+
+const STEP_COUNT = 5;
+
+export function SetupPage() {
+  const [step, setStep] = useState(0);
+
+  const next = () => setStep((s) => Math.min(s + 1, STEP_COUNT - 1));
+  const back = () => setStep((s) => Math.max(s - 1, 0));
+
+  const steps = [
+    <StepWelcome onNext={next} />,
+    <StepAccount onNext={next} />,
+    <StepTemplate onNext={next} />,
+    <StepEdit onNext={next} />,
+    <StepDone />,
+  ];
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <a href="#/" className="text-base font-semibold tracking-tight hover:opacity-80 transition-opacity">
+            Git<span className="text-primary">Vita</span>
+          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="#/demo"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              See demo
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* Wizard body */}
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        <ProgressBar current={step} total={STEP_COUNT} />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {steps[step]}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Back navigation (not on welcome or done) */}
+        {step > 0 && step < STEP_COUNT - 1 && (
+          <div className="mt-8 flex items-center">
+            <button
+              onClick={back}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft size={13} />
+              Back
+            </button>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

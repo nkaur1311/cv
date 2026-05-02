@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 const GITHUB_TEMPLATE_URL = "https://github.com/git-vita/git-vita.github.io/generate";
+const SETUP_URL = "#/setup";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -228,9 +229,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
               See demo
             </a>
             <a
-              href={GITHUB_TEMPLATE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={SETUP_URL}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity"
             >
               Get started free
@@ -280,9 +279,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16"
           >
             <a
-              href={GITHUB_TEMPLATE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={SETUP_URL}
               className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
             >
               Get my free portfolio
@@ -550,9 +547,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             have something you're proud to share.
           </p>
           <a
-            href={GITHUB_TEMPLATE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={SETUP_URL}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground text-base font-semibold hover:opacity-90 transition-opacity"
           >
             Get my free portfolio
