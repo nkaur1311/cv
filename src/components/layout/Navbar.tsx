@@ -9,21 +9,66 @@ interface NavbarProps {
 }
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
+  { label: "About",      href: "#about" },
+  { label: "Skills",     href: "#skills" },
   { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+  { label: "Projects",   href: "#projects" },
+  { label: "Contact",    href: "#contact" },
 ];
 
-export function Navbar({ theme, onToggleTheme }: NavbarProps) {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+const sectionIds = navLinks.map((l) => l.href.slice(1)); // ["about", "skills", ...]
 
+export function Navbar({ theme, onToggleTheme }: NavbarProps) {
+  const [scrolled, setScrolled]         = useState(false);
+  const [mobileOpen, setMobileOpen]     = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
+
+  // Scroll shadow
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Active section via IntersectionObserver
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    // Track which sections are currently intersecting and pick the topmost one
+    const visible = new Set<string>();
+
+    const updateActive = () => {
+      // Priority: first section in DOM order that is visible
+      const ordered = sectionIds.filter((id) => visible.has(id));
+      if (ordered.length > 0) setActiveSection(ordered[0]);
+    };
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            visible.add(id);
+          } else {
+            visible.delete(id);
+          }
+          updateActive();
+        },
+        {
+          // Trigger when section covers at least 20% of the viewport
+          // and the top 20% of the viewport is the "active" zone
+          rootMargin: "-10% 0px -70% 0px",
+          threshold: 0,
+        },
+      );
+
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -56,17 +101,41 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
 
         {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="px-3.5 py-2 text-xs font-medium tracking-widest text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary uppercase"
-              data-testid={`nav-link-${link.label.toLowerCase()}`}
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.slice(1);
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`relative px-3.5 py-2 text-xs font-medium tracking-widest uppercase rounded-md transition-colors ${
+                  isActive
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
+                data-testid={`nav-link-${link.label.toLowerCase()}`}
+              >
+                {/* Active underline pill */}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    className="absolute inset-0 rounded-md bg-secondary"
+                    style={{ zIndex: -1 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {/* Active accent dot */}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-dot"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {link.label}
+              </a>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2">
@@ -160,16 +229,27 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
             className="md:hidden overflow-hidden bg-background/95 backdrop-blur-md border-b border-border"
           >
             <div className="px-6 py-4 flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-3 py-3 text-xs font-medium tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.slice(1);
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className={`flex items-center gap-2.5 px-3 py-3 text-xs font-medium tracking-widest uppercase rounded-md transition-colors ${
+                      isActive
+                        ? "text-foreground bg-secondary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                    )}
+                    {!isActive && <span className="w-1.5 h-1.5 flex-shrink-0" />}
+                    {link.label}
+                  </a>
+                );
+              })}
               <a
                 href={config.resumeUrl}
                 download={config.resumeFileName}
