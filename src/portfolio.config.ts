@@ -38,6 +38,7 @@ const rawConfig = rawConfigYaml as unknown as {
   publications:   { title: string; authors: string; venue: string; year: string; url: string; type: string; tags: string[] }[];
   testimonials:         { name: string; title: string; company: string; relationship: string; quote: string; photoUrl: string }[];
   siteUrl?:             string;
+  showPoweredBy?:       boolean;
   contactFormEndpoint?: string;
   blog?: {
     enabled?:     boolean;
@@ -121,6 +122,7 @@ export const config = {
   publications:   (rawConfig.publications   ?? []) as Publication[],
   testimonials:   (rawConfig.testimonials   ?? []) as Testimonial[],
   siteUrl:             rawConfig.siteUrl             ?? "",
+  showPoweredBy:       rawConfig.showPoweredBy       ?? false,
   contactFormEndpoint: rawConfig.contactFormEndpoint ?? "",
   blog: {
     enabled:     rawConfig.blog?.enabled     ?? false,

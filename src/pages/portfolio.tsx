@@ -13,6 +13,7 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { config } from "@/portfolio.config";
 import type { SectionId } from "@/portfolio.config";
+import { Link2 } from "lucide-react";
 
 interface PortfolioPageProps {
   theme: string;
@@ -45,6 +46,19 @@ export function PortfolioPage({ theme, onToggleTheme, topOffset }: PortfolioPage
           const Section = SECTION_COMPONENTS[id];
           return Section ? <Section key={id} /> : null;
         })}
+      {config.showPoweredBy && (
+        <footer className="py-5 px-6 border-t border-border text-center">
+          <a
+            href="https://github.com/git-vita/git-vita.github.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            <Link2 size={10} />
+            Made with GitVita
+          </a>
+        </footer>
+      )}
     </div>
   );
 }

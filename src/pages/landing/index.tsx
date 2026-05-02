@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight, Palette, Smartphone, FileText,
   Zap, Globe, Lock, ChevronDown, Sun, Moon,
-  Github, Check,
+  Github, Check, Rss, PenLine, BookOpen, Sparkles,
+  Link2, LayoutTemplate,
 } from "lucide-react";
 
 const GITHUB_TEMPLATE_URL = "https://github.com/git-vita/git-vita.github.io/generate";
+const GITHUB_REPO_URL = "https://github.com/git-vita/git-vita.github.io";
 const SETUP_URL = "#/setup";
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Data ──────────────────────────────────────────────────────────────────────
 
 const STEPS = [
   {
@@ -23,7 +25,7 @@ const STEPS = [
     num: "02",
     emoji: "✏️",
     title: "Fill in your details",
-    body: "Open a simple settings file and replace the placeholder information with your name, job title, work experience, and social links.",
+    body: "Open one plain-text settings file and replace the placeholders with your name, job title, work experience, and links.",
     note: "It reads like a form — no coding knowledge needed.",
   },
   {
@@ -38,18 +40,18 @@ const STEPS = [
 const FEATURES = [
   {
     icon: Palette,
-    title: "10+ beautiful themes",
-    desc: "Pick a colour scheme that matches your style. Switch it any time with a single word change.",
+    title: "6 colour themes",
+    desc: "Indigo, emerald, rose, amber, ocean, slate — switch with a single word change in your settings file.",
   },
   {
     icon: Smartphone,
     title: "Looks great everywhere",
-    desc: "Phones, tablets, laptops — your portfolio is perfectly laid out on every screen.",
+    desc: "Phones, tablets, laptops — your portfolio is perfectly laid out on every screen size.",
   },
   {
     icon: FileText,
     title: "Built-in resume page",
-    desc: "Print a polished, ready-to-send PDF resume straight from your portfolio. No extra tools needed.",
+    desc: "Print a polished, PDF-ready resume straight from your portfolio. No extra tools needed.",
   },
   {
     icon: Globe,
@@ -57,14 +59,53 @@ const FEATURES = [
     desc: "Your portfolio lives at yourname.github.io. Bring your own custom domain any time — still free.",
   },
   {
+    icon: Rss,
+    title: "RSS feed included",
+    desc: "Your blog ships with a standards-compliant RSS feed at /rss.xml — readers can subscribe with any feed reader.",
+  },
+  {
+    icon: BookOpen,
+    title: "Related posts",
+    desc: "Readers who finish one post see suggestions for what to read next, based on shared tags.",
+  },
+  {
+    icon: Moon,
+    title: "Dark mode",
+    desc: "Every page works in light and dark mode out of the box. No extra configuration needed.",
+  },
+  {
     icon: Zap,
     title: "Updates in under 2 minutes",
-    desc: "Edit your details and your site refreshes itself automatically. Every single time.",
+    desc: "Edit your settings file and your site refreshes itself. Automatically, every single time.",
   },
   {
     icon: Lock,
     title: "No ads. No fees. Ever.",
     desc: "GitVita is open source and hosted by GitHub for free. Nothing to pay for, nothing to cancel.",
+  },
+];
+
+const BLOG_MOCK_POSTS = [
+  {
+    tags: ["career", "mindset"],
+    title: "Why I Started Building in Public",
+    excerpt: "Sharing your work before it's perfect is terrifying. It's also the best career move I've made.",
+    date: "Mar 10",
+    mins: 2,
+  },
+  {
+    tags: ["tools", "design"],
+    title: "The Tools I Actually Use Every Day",
+    excerpt: "A short, honest list — no affiliate links, no fluff.",
+    date: "Feb 4",
+    mins: 3,
+  },
+  {
+    tags: ["life", "writing"],
+    title: "Hello, World",
+    excerpt: "Every developer eventually writes a first post. This is mine.",
+    date: "Jan 20",
+    mins: 2,
   },
 ];
 
@@ -86,8 +127,12 @@ const FAQS = [
     a: "Yes. GitHub Pages supports custom domains at no extra cost. You'd need to own the domain (around €12–15/year from any registrar), but the hosting is always free.",
   },
   {
-    q: "Can I change things later?",
-    a: "Absolutely. Change your theme, colours, content, or layout any time by editing your settings file. Your site updates itself within 2 minutes. No re-deploying, no technical steps.",
+    q: "Can I write blog posts?",
+    a: "Yes — and it's built in, not bolted on. You write posts in plain Markdown files and drop them in the blog/ folder. Your portfolio automatically picks them up, shows them with tags and reading time, and generates an RSS feed at /rss.xml so readers can subscribe.",
+  },
+  {
+    q: "Will it work on GitHub Pages?",
+    a: "Yes, that's exactly what it's designed for. Every feature — portfolio, blog, resume, RSS feed, dark mode, themes — is a static file that GitHub Pages serves for free. Nothing requires a server.",
   },
   {
     q: "What is GitHub?",
@@ -133,8 +178,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── Browser mockup preview ───────────────────────────────────────────────────
-
 function BrowserMockup() {
   return (
     <motion.div
@@ -143,7 +186,6 @@ function BrowserMockup() {
       transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
       className="w-full max-w-2xl mx-auto rounded-2xl border border-border shadow-2xl shadow-primary/5 overflow-hidden bg-background"
     >
-      {/* Browser chrome */}
       <div className="flex items-center gap-2 px-4 py-3 bg-secondary border-b border-border">
         <div className="flex gap-1.5">
           <div className="w-3 h-3 rounded-full bg-red-400/70" />
@@ -156,26 +198,20 @@ function BrowserMockup() {
           </div>
         </div>
       </div>
-
-      {/* Portfolio preview */}
       <div className="bg-background p-6 sm:p-10 text-center">
-        {/* Avatar placeholder */}
         <div className="w-16 h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl mx-auto mb-4">
           JD
         </div>
-        {/* Open to work badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[11px] font-medium mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           Open to Opportunities
         </div>
-        {/* Name and title */}
         <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground mb-1">
           Jane Doe
         </h2>
         <p className="text-xs font-mono tracking-widest text-primary uppercase mb-4">
           UX Designer &amp; Researcher
         </p>
-        {/* CTA buttons */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="px-5 py-2 rounded-full bg-primary text-primary-foreground text-xs font-medium">
             View My Work
@@ -184,9 +220,8 @@ function BrowserMockup() {
             View Resume
           </div>
         </div>
-        {/* Skill chips */}
         <div className="flex flex-wrap justify-center gap-2">
-          {["Figma", "User Research", "Prototyping", "Usability Testing", "React"].map((s) => (
+          {["Figma", "User Research", "Prototyping", "React", "Usability Testing"].map((s) => (
             <span key={s} className="text-[10px] px-2.5 py-1 rounded-full bg-secondary border border-border text-muted-foreground">
               {s}
             </span>
@@ -197,7 +232,58 @@ function BrowserMockup() {
   );
 }
 
-// ─── Main landing page ─────────────────────────────────────────────────────────
+function BlogMockup() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6 }}
+      className="rounded-2xl border border-border shadow-xl shadow-primary/5 overflow-hidden bg-background"
+    >
+      <div className="flex items-center gap-2 px-4 py-3 bg-secondary border-b border-border">
+        <div className="flex gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+        </div>
+        <span className="text-[11px] text-muted-foreground font-mono ml-1">yourname.github.io/#/blog</span>
+      </div>
+      <div className="p-5 space-y-3">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-sm font-serif font-semibold text-foreground">Blog</p>
+          <span className="flex items-center gap-1 text-[10px] text-primary font-medium">
+            <Rss size={9} /> RSS
+          </span>
+        </div>
+        <div className="flex gap-1.5 mb-2">
+          {["All", "career", "design", "tools"].map((t, i) => (
+            <span key={t} className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${i === 0 ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"}`}>
+              {t}
+            </span>
+          ))}
+        </div>
+        {BLOG_MOCK_POSTS.map((p) => (
+          <div key={p.title} className="p-3 rounded-xl border border-border bg-secondary/20 hover:border-primary/30 transition-colors">
+            <div className="flex gap-1 mb-1.5">
+              {p.tags.map((t) => (
+                <span key={t} className="px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground text-[9px] font-medium">{t}</span>
+              ))}
+            </div>
+            <p className="text-xs font-medium text-foreground mb-1 leading-snug">{p.title}</p>
+            <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-1 mb-1.5">{p.excerpt}</p>
+            <div className="flex items-center justify-between text-[9px] text-muted-foreground">
+              <span>{p.date} · {p.mins} min read</span>
+              <span className="text-primary">Read →</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Main landing page ──────────────────────────────────────────────────────────
 
 interface LandingPageProps {
   theme: string;
@@ -208,13 +294,22 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
 
-      {/* ── Navbar ──────────────────────────────────────────────────────── */}
+      {/* ── Navbar ───────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-base font-semibold tracking-tight">
             Git<span className="text-primary">Vita</span>
           </span>
           <div className="flex items-center gap-3">
+            <a
+              href={GITHUB_REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-[11px] text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors font-mono"
+            >
+              <Github size={12} />
+              Star on GitHub
+            </a>
             <button
               onClick={onToggleTheme}
               className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
@@ -238,18 +333,17 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
         </div>
       </header>
 
-      {/* ── Hero ────────────────────────────────────────────────────────── */}
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="pt-24 pb-16 px-6 text-center">
         <div className="max-w-3xl mx-auto">
-
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-medium mb-6"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            Free · Open source · No coding required
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            Free · Open source · Runs on GitHub Pages
           </motion.div>
 
           <motion.h1
@@ -268,8 +362,8 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             transition={{ duration: 0.55, delay: 0.1 }}
             className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto"
           >
-            Fill in one simple file with your details. Get a beautiful,
-            professional portfolio that lives online forever — completely free.
+            Fork the template. Fill in one YAML file. Get a beautiful, professional portfolio
+            with a blog, resume page, and RSS feed — hosted free on GitHub Pages, forever.
           </motion.p>
 
           <motion.div
@@ -299,12 +393,14 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
 
       {/* ── Social proof strip ───────────────────────────────────────────── */}
       <section className="py-8 px-6 border-y border-border bg-secondary/30">
-        <div className="max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-6 text-xs text-muted-foreground">
+        <div className="max-w-5xl mx-auto flex flex-wrap justify-center items-center gap-x-8 gap-y-2 text-xs text-muted-foreground">
           {[
             "✓  No coding required",
-            "✓  Free hosting, forever",
+            "✓  Free GitHub Pages hosting",
             "✓  Your own web address",
-            "✓  Built-in resume page",
+            "✓  Built-in blog + RSS feed",
+            "✓  Printable resume page",
+            "✓  Dark mode included",
             "✓  Updates automatically",
           ].map((item) => (
             <span key={item} className="font-medium">{item}</span>
@@ -340,7 +436,6 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="relative"
               >
-                {/* Connector line */}
                 {i < STEPS.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[calc(50%+2.5rem)] right-[-calc(50%-2.5rem)] h-px bg-border" />
                 )}
@@ -348,22 +443,16 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
                 <div className="text-xs font-mono text-primary/60 font-semibold tracking-widest mb-2">
                   STEP {step.num}
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  {step.body}
-                </p>
-                <p className="text-xs text-muted-foreground/70 italic">
-                  {step.note}
-                </p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">{step.body}</p>
+                <p className="text-xs text-muted-foreground/70 italic">{step.note}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Settings file preview ────────────────────────────────────────── */}
+      {/* ── Settings file preview ─────────────────────────────────────────── */}
       <section className="py-16 px-6 bg-secondary/20">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -375,23 +464,24 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
           >
             <div>
               <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
-                The settings file
+                One file. Everything.
               </p>
               <h2 className="text-3xl font-serif font-medium text-foreground mb-4">
-                It really is just filling in a form.
+                Your entire portfolio lives in one file.
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                Your entire portfolio is controlled by one plain-text settings
-                file. No HTML. No CSS. No code of any kind. Just your details.
+                No HTML. No CSS. No code of any kind. Every section of your portfolio — 
+                bio, experience, projects, blog settings, colour theme — is controlled by 
+                one plain-text YAML file. It reads like filling in a form.
               </p>
               <ul className="space-y-2">
                 {[
-                  "Your name and job title",
-                  "A short bio about yourself",
-                  "Your work experience",
-                  "Projects you've worked on",
-                  "Skills and education",
-                  "Social media links",
+                  "Name, title, bio, and contact",
+                  "Work experience and projects",
+                  "Skills, education, certifications",
+                  "Colour theme (one word to change it)",
+                  "Blog settings and site URL",
+                  "Which sections to show or hide",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Check size={14} className="text-primary flex-shrink-0" />
@@ -401,7 +491,6 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
               </ul>
             </div>
 
-            {/* Fake settings file */}
             <div className="rounded-2xl border border-border bg-background overflow-hidden shadow-lg">
               <div className="flex items-center gap-2 px-4 py-3 bg-secondary border-b border-border">
                 <div className="flex gap-1.5">
@@ -414,18 +503,20 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
                 </span>
               </div>
               <div className="p-5 font-mono text-[11px] leading-relaxed text-muted-foreground space-y-1">
-                <div><span className="text-primary/60"># Your details</span></div>
+                <div><span className="text-primary/60"># Your identity</span></div>
                 <div><span className="text-blue-500 dark:text-blue-400">name</span>: <span className="text-green-600 dark:text-green-400">"Jane Doe"</span></div>
                 <div><span className="text-blue-500 dark:text-blue-400">title</span>: <span className="text-green-600 dark:text-green-400">"UX Designer"</span></div>
-                <div><span className="text-blue-500 dark:text-blue-400">email</span>: <span className="text-green-600 dark:text-green-400">"jane@example.com"</span></div>
                 <div><span className="text-blue-500 dark:text-blue-400">location</span>: <span className="text-green-600 dark:text-green-400">"London, UK"</span></div>
-                <div className="pt-1"><span className="text-primary/60"># Your colours</span></div>
+                <div className="pt-1"><span className="text-primary/60"># Pick a theme colour</span></div>
                 <div><span className="text-blue-500 dark:text-blue-400">colorPreset</span>: <span className="text-green-600 dark:text-green-400">"emerald"</span></div>
+                <div className="pt-1"><span className="text-primary/60"># Enable the blog</span></div>
+                <div><span className="text-blue-500 dark:text-blue-400">blog</span>:</div>
+                <div className="pl-4"><span className="text-orange-500">enabled</span>: <span className="text-yellow-500 dark:text-yellow-400">true</span></div>
+                <div className="pl-4"><span className="text-orange-500">title</span>: <span className="text-green-600 dark:text-green-400">"Jane's Notes"</span></div>
                 <div className="pt-1"><span className="text-primary/60"># Your experience</span></div>
                 <div><span className="text-blue-500 dark:text-blue-400">experience</span>:</div>
                 <div className="pl-4"><span className="text-orange-500">- company</span>: <span className="text-green-600 dark:text-green-400">"Acme Design"</span></div>
                 <div className="pl-6"><span className="text-orange-500">role</span>: <span className="text-green-600 dark:text-green-400">"Lead Designer"</span></div>
-                <div className="pl-6"><span className="text-orange-500">period</span>: <span className="text-green-600 dark:text-green-400">"2022 – Now"</span></div>
                 <div className="text-foreground/20">...</div>
               </div>
             </div>
@@ -433,8 +524,53 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
         </div>
       </section>
 
-      {/* ── Features ──────────────────────────────────────────────────────── */}
+      {/* ── Blog showcase ─────────────────────────────────────────────────── */}
       <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.55 }}
+            >
+              <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
+                Blog · RSS · Related posts
+              </p>
+              <h2 className="text-3xl font-serif font-medium text-foreground mb-4">
+                Your portfolio and your blog, in one place.
+              </h2>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                Drop Markdown files into a folder and they become blog posts. 
+                Tags, reading time, and related post suggestions are automatic. 
+                Your readers can subscribe via the RSS feed — no third-party 
+                newsletter service needed.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  { icon: PenLine, text: "Write posts in plain Markdown — no editor needed" },
+                  { icon: Rss,     text: "Auto-generated RSS feed at /rss.xml" },
+                  { icon: Sparkles, text: "Related posts shown at the end of each article" },
+                  { icon: LayoutTemplate, text: "Tag filter on the blog index keeps posts organised" },
+                ].map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-3 text-sm text-muted-foreground">
+                    <span className="mt-0.5 w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Icon size={13} className="text-primary" />
+                    </span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <BlogMockup />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features grid ─────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-secondary/20">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -449,35 +585,97 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             <h2 className="text-3xl sm:text-4xl font-serif font-medium text-foreground">
               Everything a great portfolio needs.
             </h2>
+            <p className="mt-4 text-sm text-muted-foreground max-w-md mx-auto">
+              Not a stripped-down template — a complete platform, all driven from one file.
+            </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
             {FEATURES.map((feat, i) => (
               <motion.div
                 key={feat.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: i * 0.07 }}
+                transition={{ duration: 0.45, delay: i * 0.06 }}
                 className="p-6 rounded-2xl border border-border hover:border-primary/30 bg-background hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
               >
                 <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <feat.icon size={17} className="text-primary" />
                 </div>
-                <h3 className="text-sm font-semibold text-foreground mb-2">
-                  {feat.title}
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {feat.desc}
-                </p>
+                <h3 className="text-sm font-semibold text-foreground mb-2">{feat.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Viral loop — "Made with GitVita" ──────────────────────────────── */}
+      <section className="py-20 px-6 border-y border-border">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5 }}
+            className="grid md:grid-cols-2 gap-10 items-center"
+          >
+            <div>
+              <p className="text-xs font-mono font-medium tracking-widest text-primary uppercase mb-4">
+                Spread the word
+              </p>
+              <h2 className="text-2xl font-serif font-medium text-foreground mb-4">
+                Add a badge. Help other developers discover GitVita.
+              </h2>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                Add one optional line to your settings file and a small "Made with GitVita" 
+                badge appears in your portfolio footer. No obligations — just a nice way 
+                to help other developers find a free tool they might love.
+              </p>
+              <div className="flex items-center gap-3">
+                <a
+                  href={SETUP_URL}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+                >
+                  Get started free
+                  <ArrowRight size={14} />
+                </a>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Github size={14} />
+                  View source
+                </a>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
+                <p className="text-[10px] font-mono text-muted-foreground mb-2">portfolio.config.yaml</p>
+                <div className="font-mono text-[11px] space-y-0.5 text-muted-foreground">
+                  <div><span className="text-primary/60"># Optional — show a footer badge</span></div>
+                  <div><span className="text-blue-500 dark:text-blue-400">showPoweredBy</span>: <span className="text-yellow-500 dark:text-yellow-400">true</span></div>
+                </div>
+              </div>
+              <div className="rounded-xl border border-border bg-secondary/30 px-5 py-4 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  yourname.github.io — portfolio footer
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground border border-border rounded-full px-3 py-1 bg-background">
+                  <Link2 size={10} />
+                  Made with GitVita
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Live demo CTA ─────────────────────────────────────────────────── */}
-      <section className="py-16 px-6 bg-secondary/20 border-y border-border">
+      <section className="py-16 px-6 bg-secondary/20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -492,8 +690,8 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             Not convinced? See the real thing.
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-            The demo portfolio you're about to see was built entirely with
-            GitVita — the same template you'll get for free.
+            The demo portfolio was built entirely with GitVita — the same template you'll get for free. 
+            Browse the blog, download the resume, switch to dark mode.
           </p>
           <a
             href="#/demo"
@@ -531,7 +729,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
       </section>
 
       {/* ── Final CTA ─────────────────────────────────────────────────────── */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 bg-secondary/20">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -542,9 +740,9 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
           <h2 className="text-4xl sm:text-5xl font-serif font-medium text-foreground mb-6 leading-tight">
             Your work deserves to be seen.
           </h2>
-          <p className="text-base text-muted-foreground leading-relaxed mb-10">
-            Set up your free portfolio today. It takes 5 minutes and you'll
-            have something you're proud to share.
+          <p className="text-base text-muted-foreground leading-relaxed mb-10 max-w-lg mx-auto">
+            A portfolio, a blog, a resume page, and an RSS feed — all from one file, 
+            hosted free on GitHub Pages.
           </p>
           <a
             href={SETUP_URL}
@@ -554,7 +752,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
             <ArrowRight size={17} />
           </a>
           <p className="mt-5 text-xs text-muted-foreground">
-            Free forever · No credit card · No coding
+            Free forever · No credit card · No server · Runs on GitHub Pages
           </p>
         </motion.div>
       </section>
@@ -571,7 +769,7 @@ export function LandingPage({ theme, onToggleTheme }: LandingPageProps) {
               Live demo
             </a>
             <a
-              href="https://github.com/git-vita/git-vita.github.io"
+              href={GITHUB_REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-foreground transition-colors"

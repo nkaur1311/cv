@@ -14,6 +14,7 @@
 # ╚══════════════════════════════════════════════════════════════════════╝
 siteMode: "landing"   # ← CHANGE THIS to "portfolio"
 siteUrl:  "https://yourusername.github.io"  # ← Your GitHub Pages URL (used for RSS & canonical links)
+showPoweredBy: false  # Set to true to show a small "Made with GitVita" badge in your footer (helps others discover GitVita)
 
 # ── Identity ───────────────────────────────────────────── (required) ──
 name: "Alex Rivera"
