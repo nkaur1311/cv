@@ -56,19 +56,9 @@ function setInitialsFavicon(name: string, color: string) {
   if (!link.parentNode) document.head.appendChild(link);
 }
 
-const presetColorMap: Record<string, string> = {
-  indigo: "#6366f1",
-  emerald: "#10b981",
-  rose: "#f43f5e",
-  amber: "#f59e0b",
-  ocean: "#0ea5e9",
-  slate: "#475569",
-  custom: "#374151",
-};
-
 const faviconColor =
   (config.primaryColor && config.primaryColor.trim()) ||
-  presetColorMap[config.colorPreset] ||
+  config.customColors?.[config.colorPreset]?.primary ||
   "#374151";
 
 setInitialsFavicon(config.name, faviconColor);
