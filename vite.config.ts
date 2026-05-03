@@ -15,7 +15,10 @@ if (rawPort && (Number.isNaN(port) || port <= 0)) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = rawBasePath ?? "/";
+const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "";
+const basePath =
+  rawBasePath ??
+  (repoName.endsWith(".github.io") ? "/" : repoName ? `/${repoName}/` : "/");
 
 const portfolioConfig = jsYaml.load(
   readFileSync(new URL("./portfolio.config.yaml", import.meta.url), "utf8")
