@@ -12,17 +12,17 @@
 # ║                                                                      ║
 # ║  Change it to "portfolio" once you have filled in your details.     ║
 # ╚══════════════════════════════════════════════════════════════════════╝
-siteMode: "landing"   # ← CHANGE THIS to "portfolio"
-siteUrl:  "https://yourusername.github.io"  # ← Your GitHub Pages URL (used for RSS & canonical links)
-showPoweredBy: false  # Set to true to show a small "Made with GitVitae" badge in your footer (helps others discover GitVitae)
+siteMode: "portfolio"   # ← CHANGE THIS to "portfolio"
+siteUrl:  "https://nkaur1311.github.io"  # ← Your GitHub Pages URL (used for RSS & canonical links)
+showPoweredBy: true  # Set to true to show a small "Made with GitVitae" badge in your footer (helps others discover GitVitae)
 
 # ── Identity ───────────────────────────────────────────── (required) ──
-name: "Alex Rivera"
-title: "Full-Stack Engineer"
+name: "Navneet Kaur"
+title: "SAP BTP Architect"
 tagline: "I build thoughtful software that scales."
-email: "alex@example.com"
+email: "navneet.kaur@example.com"
 phone: ""                    # Optional — e.g. "+1 (555) 000-1234". Shown in contact section and resume.
-location: "San Francisco, CA"
+location: "GTA, Ontario"
 avatarUrl: "https://api.dicebear.com/9.x/fun-emoji/svg?seed=Alex&mouth[]=wideSmile&radius=12"  # Demo avatar — replace with your own photo URL (see instructions below)
 # How to add a profile photo (free, no extra account needed):
 #   1. Go to your GitHub repo → click "Add file" → "Upload files"
@@ -50,7 +50,7 @@ openToWork: true         # Shows "Open to Opportunities" banner when true
 
 # ── Theme ──────────────────────────────────────────────────────────────
 defaultTheme: "system"   # Options: light | dark | system
-colorPreset: "indigo"    # Options: indigo | emerald | rose | amber | ocean | slate | custom
+colorPreset: "rose"    # Options: indigo | emerald | rose | amber | ocean | slate | custom
 # primaryColor: "#6366f1" # Optional — pick any colour you like and paste its hex code here.
                            # Overrides colorPreset above. To find a hex code:
                            #   → Google "colour picker", pick a colour, copy the 6-digit code (e.g. #e11d48)
@@ -76,12 +76,12 @@ sections:
   - { id: education,      show: true  }
   - { id: certifications, show: true  }
   - { id: publications,   show: false }
-  - { id: testimonials,   show: true  }
+  - { id: testimonials,   show: false  }
   - { id: contact,        show: true  }
 
 # ── Social links ───────────────────────────── (leave blank to hide) ───
 social:
-  github:   "https://github.com/yourusername"
+  github:   "https://github.com/nkaur1311"
   linkedin: "https://linkedin.com/in/yourusername"
   twitter:  ""
   website:  ""
@@ -89,9 +89,9 @@ social:
 # ── About ──────────────────────────────────────────────────────────────
 # Use | for multi-line text. Indent each line by 2 spaces.
 about: |
-  I'm a full-stack engineer with 5+ years of experience building products
-  that people love. I specialize in React, Node.js, and distributed systems.
-  When I'm not coding, I'm hiking trails or experimenting with new coffee
+  I'm a SAP BTP Architect with 13+ years of experience building SAP BTP 
+  Platforms. I specialize in Node.js, Javascript, Python and distributed
+  systems. When I'm not coding, I'm hiking trails or experimenting with new coffee
   brewing methods.
 
 
@@ -101,9 +101,9 @@ about: |
 # Optional fields: prefix (e.g. "$") and suffix (e.g. "+" or "k").
 # Remove all entries or set show: false above to hide this section.
 stats:
-  - { label: "Years Experience", value: 5,    suffix: "+" }
+  - { label: "Years Experience", value: 13,    suffix: "+" }
   - { label: "Projects Shipped", value: 20,   suffix: "+" }
-  - { label: "Happy Clients",    value: 50,   suffix: "+" }
+  - { label: "Happy Clients",    value: 5,   suffix: "+" }
   - { label: "Cups of Coffee",   value: 1200, suffix: ""  }
 
 # Examples of other combinations you can use:
@@ -114,9 +114,9 @@ stats:
 # ── Languages ──────────────────────────────────────────────────────────
 # level options: Native | Fluent | Conversational | Basic
 languages:
-  - { name: "English",  level: "Native"        }
-  - { name: "Spanish",  level: "Conversational" }
-  - { name: "Mandarin", level: "Basic"          }
+  - { name: "English",  level: "Conversational"        }
+  - { name: "Punjabi",  level: "Native" }
+  - { name: "Hindi", level: "Native"          }
 
 # ── Skills ─────────────────────────────────────────────────────────────
 skills:
@@ -131,9 +131,9 @@ skills:
 
 # ── Experience ─────────────────────────────────────────────────────────
 experience:
-  - company: "Acme Corp"
-    role: "Senior Full-Stack Engineer"
-    period: "2022 – Present"
+  - company: "Infosys Limited"
+    role: "Technology Lead"
+    period: "2013 – Present"
     description: |
       Led migration of monolithic Rails app to microservices.
       Reduced p99 latency by 60%. Mentored a team of 4 engineers.
