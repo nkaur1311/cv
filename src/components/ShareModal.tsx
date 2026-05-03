@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Copy, CheckCircle, Download, Mail, QrCode, Code2, Link2, Hash, Printer } from "lucide-react";
+import { Copy, CheckCircle, Download, Mail, QrCode, Link2 } from "lucide-react";
 import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { config } from "@/portfolio.config";
 import QRCodeLib from "qrcode";
@@ -9,20 +9,6 @@ interface ShareModalProps {
   open: boolean;
   onClose: () => void;
 }
-
-const SECTION_LABELS: Record<string, string> = {
-  about:          "About",
-  stats:          "Stats",
-  skills:         "Skills",
-  languages:      "Languages",
-  experience:     "Experience",
-  projects:       "Projects",
-  education:      "Education",
-  certifications: "Certifications",
-  publications:   "Publications",
-  testimonials:   "Testimonials",
-  contact:        "Contact",
-};
 
 function CopyButton({
   text,
@@ -67,21 +53,6 @@ export function ShareModal({ open, onClose }: ShareModalProps) {
       ? `${window.location.origin}${window.location.pathname.replace(/\/$/, "") || "/"}`
       : "";
 
-  // Base URL for section deep-links: prefer siteUrl when it looks like a real
-  // GitHub Pages domain; fall back to current origin+path otherwise.
-  const sectionBase =
-    config.siteUrl && !config.siteUrl.includes("yourusername")
-      ? config.siteUrl.replace(/\/$/, "")
-      : portfolioUrl;
-
-  // Preserve the #/demo prefix when linking from the demo route
-  const demoPrefix =
-    typeof window !== "undefined" && window.location.hash.startsWith("#/demo")
-      ? "#/demo"
-      : "";
-
-  const visibleSections = config.sections.filter((s) => s.show);
-
   const pageTitle = `${config.name} — ${config.title}`;
 
   useEffect(() => {
@@ -124,12 +95,12 @@ export function ShareModal({ open, onClose }: ShareModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[85vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-base font-medium">Share your portfolio</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-5 pb-2">
+        <div className="space-y-4 overflow-y-auto pr-1 pb-1">
 
           {/* ── Portfolio link ─────────────────────────── */}
           <div>
@@ -149,41 +120,6 @@ export function ShareModal({ open, onClose }: ShareModalProps) {
               </button>
             </div>
           </div>
-
-          {/* ── Section deep-links ─────────────────────── */}
-          {visibleSections.length > 0 && (
-            <div>
-              <p className="text-xs font-mono tracking-widest uppercase text-muted-foreground mb-2 flex items-center gap-1.5">
-                <Hash size={11} /> Share a specific section
-              </p>
-              <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
-                Send a recruiter directly to the part of your portfolio that matters most.
-              </p>
-              <div className="grid grid-cols-2 gap-1.5">
-                {visibleSections.map((s) => {
-                  const label = SECTION_LABELS[s.id] ?? s.id;
-                  const url   = `${sectionBase}${demoPrefix}#${s.id}`;
-                  return (
-                    <CopyButton
-                      key={s.id}
-                      text={url}
-                      label={label}
-                      copiedLabel="Copied ✓"
-                      compact
-                    />
-                  );
-                })}
-                {config.blog?.enabled && (
-                  <CopyButton
-                    text={`${sectionBase}${demoPrefix.replace("/demo", "")}#/blog`}
-                    label="Blog"
-                    copiedLabel="Copied ✓"
-                    compact
-                  />
-                )}
-              </div>
-            </div>
-          )}
 
           {/* ── Social share ───────────────────────────── */}
           <div>
@@ -242,7 +178,6 @@ export function ShareModal({ open, onClose }: ShareModalProps) {
             </div>
           </div>
 
-          {/* ── Email signature ─────────────────────────── */}
           <div>
             <p className="text-xs font-mono tracking-widest uppercase text-muted-foreground mb-2 flex items-center gap-1.5">
               <Mail size={11} /> Email signature
@@ -259,20 +194,6 @@ export function ShareModal({ open, onClose }: ShareModalProps) {
               <CopyButton text={emailSignature} label="Copy HTML" />
             </div>
           </div>
-
-          {/* ── Embeddable card ─────────────────────────── */}
-          <div>
-            <p className="text-xs font-mono tracking-widest uppercase text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Code2 size={11} /> Embeddable card
-            </p>
-            <div className="p-3 rounded-xl bg-secondary border border-border">
-              <pre className="mb-2.5 p-2.5 rounded-lg bg-background border border-border/60 text-xs text-muted-foreground overflow-x-auto whitespace-pre-wrap break-all">
-                {embedCode}
-              </pre>
-              <CopyButton text={embedCode} label="Copy code" />
-            </div>
-          </div>
-
         </div>
       </DialogContent>
     </Dialog>
