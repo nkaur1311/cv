@@ -56,7 +56,12 @@ function setInitialsFavicon(name: string, color: string) {
   if (!link.parentNode) document.head.appendChild(link);
 }
 
-setInitialsFavicon(config.name, config.colorPreset || config.primaryColor || "#374151");
+const faviconColor =
+  (config.primaryColor && config.primaryColor.trim()) ||
+  config.customColors?.[config.colorPreset]?.primary ||
+  "#374151";
+
+setInitialsFavicon(config.name, faviconColor);
 
 // ── GoatCounter analytics (opt-in) ────────────────────────────────────────────
 // Free, privacy-respecting, cookie-free. See: https://www.goatcounter.com
